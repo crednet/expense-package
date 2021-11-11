@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<ruleset name="Manasoft" namespace="MyProject\CS\Standard">
+    <description>Rise coding standard</description>
+    <arg name="colors"/><!-- add colors cli parameter by default -->
+
+    <!--
+        Default file or directory to sniff.
+    -->
+    <file>src</file>
+
+    <!--
+        Include all sniffs in the PSR12 standard. Note that the
+        path to the standard does not have to be specified as the
+        PSR12 standard exists inside the PHP_CodeSniffer install
+        directory.
+    -->
+    <rule ref="PSR12"/>
+
+    <!--
+        Include some specific sniffs from available standards.
+        Note again that the name of the sniff is the code that
+        PHP_CodeSniffer gives it.
+    -->
+    <rule ref="Generic.Metrics.NestingLevel">
+        <properties>
+            <property name="nestingLevel" value="5"/>
+            <property name="absoluteNestingLevel" value="5"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="120" />
+            <property name="absoluteLineLimit" value="120" />
+        </properties>
+    </rule>
+
+    <rule ref="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
+
+    <!-- Show progression -->
+    <arg value="p"/>
+
+</ruleset>
