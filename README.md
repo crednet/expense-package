@@ -10,7 +10,12 @@ A package to communicate with the expense service
 
 ```bash
 composer require credpal/expense
+
+php artisan vendor:publish
+# This will publish a config file expense.php which you can edit/update the values
 ```
+
+
 Add this code to handler method in app/Exceptions/Handler.php
 ```php
     /**
