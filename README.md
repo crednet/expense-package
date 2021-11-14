@@ -1,6 +1,11 @@
 ## Expense package
 A package to communicate with the expense service
 
+[comment]: <> ([![Latest Version]&#40;https://img.shields.io/github/issues/crednet/expense-package.svg?style=flat-square&#41;]&#40;https://github.com/crednet/expense-package/releases&#41;)
+[![Latest Issues](https://img.shields.io/github/issues/crednet/expense-package?style=flat-square)](https://github.com/crednet/expense-package/issues)
+[![Latest Stars](https://img.shields.io/github/stars/crednet/expense-package?style=flat-square)](https://github.com/crednet/expense-package/stargazers)
+
+
 ### Installation
 
 ```bash
