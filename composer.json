@@ -21,6 +21,13 @@
         "nunomaduro/larastan": "^1.0",
         "orchestra/testbench": "^6.23"
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Credpal\\Expense\\ExpenseServiceProvider"
+            ]
+        }
+    },
     "scripts": {
         "phpstan": "./vendor/bin/phpstan analyse --memory-limit=3G",
         "test": "./vendor/bin/phpunit",
