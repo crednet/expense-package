@@ -2,13 +2,14 @@
 
 namespace Credpal\Expense;
 
+use Credpal\Expense\Services\ExpenseService;
 use Illuminate\Support\ServiceProvider;
 
 class ExpenseServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton('cpexpense',  ExpenseService::class);
     }
 
     public function boot(): void
