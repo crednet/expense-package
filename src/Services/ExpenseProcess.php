@@ -69,7 +69,7 @@ class ExpenseProcess
 	 */
 	private function processTransaction($type, $requestBody): ExpenseProcess
 	{
-		$transferUrl = ($type === 'transfer') ? config('expense.transfer_url') : config('expense.bills_url');
+		$transferUrl = ($type === ENUM::TRANSFER) ? config('expense.transfer_url') : config('expense.bills_url');
 		$bvnModel = config('expense.bvn_model');
 		$bvnColumn = config('expense.bvn_column');
 		$bvnInstance = new $bvnModel();
