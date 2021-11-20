@@ -15,6 +15,9 @@ Route::group([
     Route::post('trips/cancel-ticket', 'TripsController@cancelTicket');
     Route::post('trips/flight-rules', 'TripsController@flightRule');
     Route::post('trips/flight-reservation', 'TripsController@myFlightReservation');
+
+	Route::post('airtime-request', 'BaxiController@airtimeRequest');
+
 });
 
 
