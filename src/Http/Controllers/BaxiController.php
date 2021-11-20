@@ -12,6 +12,11 @@ use Illuminate\Http\Response;
 
 class BaxiController
 {
+	/**
+	 * @param AirtimeRequest $request
+	 * @return mixed
+	 * @throws ExpenseException
+	 */
 	public function airtimeRequest(AirtimeRequest $request)
 	{
 		$credentials = collect($request);
