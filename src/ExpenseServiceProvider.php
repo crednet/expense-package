@@ -2,7 +2,6 @@
 
 namespace Credpal\Expense;
 
-use Credpal\Expense\Services\ExpenseService;
 use Illuminate\Support\ServiceProvider;
 
 class ExpenseServiceProvider extends ServiceProvider
