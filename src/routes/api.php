@@ -9,13 +9,6 @@ Route::group([
     Route::post('transfers', 'TransferController@store');
     Route::post('webhook/transfers', 'TransferController@webhook');
 
-    Route::post('trips/search', 'TripsController@search');
-    Route::post('trips/confirm-ticket', 'TripsController@confirmTicket');
-    Route::post('trips/book', 'TripsController@bookTicket');
-    Route::post('trips/cancel-ticket', 'TripsController@cancelTicket');
-    Route::post('trips/flight-rules', 'TripsController@flightRule');
-    Route::post('trips/flight-reservation', 'TripsController@myFlightReservation');
-
 	Route::post('airtime-request', 'BaxiController@airtimeRequest');
 
 });

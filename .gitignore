@@ -5,7 +5,6 @@
 /vendor
 /pdf/*.pdf
 /database/seeds/DatabaseSeeder.php
-composer.json
 composer.lock
 .env
 .server.keys

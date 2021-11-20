@@ -9,7 +9,7 @@ class ExpenseServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton('cpexpense',  ExpenseService::class);
+        //
     }
 
     public function boot(): void
