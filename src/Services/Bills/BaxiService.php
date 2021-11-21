@@ -1,17 +1,14 @@
 <?php
 
-namespace Credpal\Expense\Services;
+namespace Credpal\Expense\Services\Bills;
 
-use App\UserProfile;
-use Credpal\Expense\Contract\ExpenseContract;
 use Credpal\Expense\Exceptions\ExpenseException;
-use Credpal\Expense\Traits\ExpenseError;
+use Credpal\Expense\Services\ExpenseProcess;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
 
-class TransferService extends ExpenseProcess
+class BaxiService extends ExpenseProcess
 {
 	protected array $credentials;
 	protected array $requestBody;
@@ -26,14 +23,14 @@ class TransferService extends ExpenseProcess
 	 * @return array
 	 * @throws ExpenseException
 	 */
-	public function makeTransfer(): array
+	public function requestAirtime(): array
 	{
 		$this->requestBody = [
-			'name' => $this->credentials['name'],
 			'account_number' => $this->credentials['account_number'],
-			'bank_code' => $this->credentials['bank_code'],
+			'recipient_number' => $this->credentials['recipient_number'],
+			'service_type' => $this->credentials['service_type'],
+			'plan' => $this->credentials['plan'],
 		];
-
-		return $this->initiateTransaction(ENUM::TRANSFER, $this->requestBody);
-    }
+		return $this->initiateTransaction(ENUM::AIRTIME, $this->requestBody, 'baxi/airtime-request');
+	}
 }
