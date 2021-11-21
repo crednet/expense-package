@@ -3,12 +3,13 @@
 namespace Credpal\Expense\Services;
 
 use App\UserProfile;
+use Credpal\Expense\Contract\ExpenseContract;
 use Credpal\Expense\Exceptions\ExpenseException;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
-class ExpenseProcess
+class ExpenseProcess implements ExpenseContract
 {
 	/**
 	 * @var Collection
@@ -67,9 +68,9 @@ class ExpenseProcess
 	/**
 	 * @throws ExpenseException
 	 */
-	private function processTransaction($type, $requestBody): ExpenseProcess
+	private function processTransaction($type, $requestBody, $url): ExpenseProcess
 	{
-		$transferUrl = ($type === ENUM::TRANSFER) ? config('expense.transfer_url') : config('expense.bills_url');
+		$transactionUrl = ($type === ENUM::TRANSFER) ? config('expense.transfer_url') : config('expense.bills_url') . $url;
 		$bvnModel = config('expense.bvn_model');
 		$bvnColumn = config('expense.bvn_column');
 		$bvnInstance = new $bvnModel();
@@ -78,7 +79,7 @@ class ExpenseProcess
 		$requestBody['description'] = $this->walletResponse['data']['description'] ?? $type;
 		$requestBody['reference'] = $this->walletResponse['data']['reference'] ?? $this->reference;
 
-		$this->expenseResponse = sendRequestTo($transferUrl, $requestBody, getPrivateKey(Enum::EXPENSE));
+		$this->expenseResponse = sendRequestTo($transactionUrl, $requestBody, getPrivateKey(Enum::EXPENSE));
 		return $this;
 	}
 
@@ -138,12 +139,13 @@ class ExpenseProcess
 	/**
 	 * @param $type
 	 * @param $requestBody
+	 * @param $url
 	 * @return array
 	 * @throws ExpenseException
 	 */
-	public function initiateTransaction($type, $requestBody): array
+	public function initiateTransaction($type, $requestBody, $url): array
 	{
-		return $this->withdrawAmount($type)->processTransaction($type, $requestBody)->processExpenseResponse();
+		return $this->withdrawAmount($type)->processTransaction($type, $requestBody, $url)->processExpenseResponse();
 	}
 
 	/**

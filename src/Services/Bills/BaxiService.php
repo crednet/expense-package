@@ -23,7 +23,7 @@ class BaxiService extends ExpenseProcess
 	 * @return array
 	 * @throws ExpenseException
 	 */
-	public function requestAirtime()
+	public function requestAirtime(): array
 	{
 		$this->requestBody = [
 			'account_number' => $this->credentials['account_number'],
@@ -31,6 +31,6 @@ class BaxiService extends ExpenseProcess
 			'service_type' => $this->credentials['service_type'],
 			'plan' => $this->credentials['plan'],
 		];
-		return $this->initiateTransaction(ENUM::AIRTIME, $this->requestBody);
+		return $this->initiateTransaction(ENUM::AIRTIME, $this->requestBody, 'baxi/airtime-request');
 	}
 }
