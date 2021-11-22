@@ -9,6 +9,7 @@ Route::group([
     Route::post('transfers', 'TransferController@store');
     Route::post('webhook/transfers', 'TransfersController@webhook');
 
+	Route::post('airtime-request', 'BaxiController@airtimeRequest');
 
 });
 
