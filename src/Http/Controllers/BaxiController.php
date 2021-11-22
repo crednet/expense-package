@@ -10,18 +10,18 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class BaxiController
+class BaxiController extends Controller
 {
-	/**
-	 * @param AirtimeRequest $request
-	 * @return mixed
-	 * @throws ExpenseException
-	 */
-	public function airtimeRequest(AirtimeRequest $request)
-	{
-		$credentials = collect($request);
-		$baxi = new BaxiService($credentials);
-		$result = $baxi->requestAirtime();
-		return $this->success($result);
-	}
+    /**
+     * @param AirtimeRequest $request
+     * @return mixed
+     * @throws ExpenseException
+     */
+    public function airtimeRequest(AirtimeRequest $request)
+    {
+        $credentials = collect($request);
+        $baxi = new BaxiService($credentials);
+        $result = $baxi->requestAirtime();
+        return $this->success($result);
+    }
 }

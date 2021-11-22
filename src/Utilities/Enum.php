@@ -10,5 +10,5 @@ class Enum
     public const WALLET = 'wallet';
     public const EXPENSE = 'expense';
     public const FAILED = 'failed';
-	public const AIRTIME = 'airtime';
+    public const AIRTIME = 'airtime';
 }

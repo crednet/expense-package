@@ -6,14 +6,14 @@ use Credpal\Expense\Exceptions\ExpenseException;
 
 interface ExpenseContract
 {
-	/**
-	 * @param $type
-	 * @param $requestBody
-	 * @param $url
-	 * @return array
-	 * @throws ExpenseException
-	 */
-    public function initiateTransaction($type, $requestBody, $url): array;
+    /**
+     * @param string $type
+     * @param array $requestBody
+     * @param string $url
+     * @return array
+     * @throws ExpenseException
+     */
+    public function initiateTransaction(string $type, array $requestBody, string $url): array;
 
     /**
      * @param string $reference
