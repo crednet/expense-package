@@ -25,12 +25,12 @@ class TransferRequest extends FormRequest
     {
          return [
              'user_id' => ['required', "exists:users,id"],
-             "wallet_id" => ["required", "integer"],
+             "wallet_id" => ["required"],
              "wallet_type" => ["required", "string"],
              "amount" => ["required", "numeric"],
              "cbs_account_number" => ["nullable", "numeric"],
              "account_number" => ["required", "numeric"],
-             "name" => ["required", "string"],
+             "account_name" => ["required", "string"],
              "bank_code" => ["required", "numeric"],
              "description" => ["nullable", "string"],
          ];

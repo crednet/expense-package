@@ -62,7 +62,7 @@ class TransferService implements ExpenseContract
 
         ];
         $this->walletResponse =  sendRequestAndThrowExceptionOnFailure(
-            $walletUrl,
+            "$walletUrl/{$this->credentials['wallet_id']}/withdraw",
             $requestBody,
             getPrivateKey(Enum::WALLET)
         );
@@ -82,7 +82,7 @@ class TransferService implements ExpenseContract
         $requestBody = [
             'bvn' => $bvnInstance->query()->whereUserId($this->credentials['user_id'])->firstOrFail()->{$bvnColumn},
             'amount' => $this->walletResponse['data']['amount'],
-            'name' => $this->credentials['name'],
+            'account_name' => $this->credentials['account_name'] ?? null,
             'account_number' => $this->credentials['account_number'],
             'bank_code' => $this->credentials['bank_code'],
             'description' => $this->walletResponse['data']['description'] ?? 'transfer',
@@ -99,18 +99,18 @@ class TransferService implements ExpenseContract
      */
     private function processExpenseResponse(): array
     {
-        $this->reverseWalletAndNotifyUserIfTransferFailedOnInitiation($this->expenseResponse);
+        $this->reverseWalletAndNotifyUserIfTransferFailedOnInitiation($this->expenseResponse, $this->reference);
         return $this->notifyUserOnSuccessfulTransferInitiation($this->expenseResponse);
     }
 
     /**
      * @param array $expenseResponse
+     * @param string $reference
      * @throws ExpenseException
      */
-    private function reverseWalletAndNotifyUserIfTransferFailedOnInitiation(array $expenseResponse): void
+    private function reverseWalletAndNotifyUserIfTransferFailedOnInitiation(array $expenseResponse, string $reference): void
     {
         $status = $expenseResponse['status'];
-        $reference = $expenseResponse['data']['reference'];
         if (!$status) {
             // update to reverse wallet if the transfer failed
             $walletUpdateUrl = ($this->walletType === Enum::DEBIT) ?

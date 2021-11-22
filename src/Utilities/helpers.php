@@ -17,7 +17,7 @@ if (!function_exists('getReference')) {
     {
         $strResult = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-        return substr(str_shuffle($strResult), 0, $lengthOfString);
+        return strtolower(substr(str_shuffle($strResult), 0, $lengthOfString));
     }
 }
 
@@ -31,13 +31,14 @@ if (!function_exists('processResponse')) {
     {
         $data = $response->json();
         $message = $data['message'];
-        $data = $data['data'];
         if (!$response->successful()) {
             return [
                 'status' => false,
                 'message' => $message,
+                'errors' => $data['errors'] ?? [],
             ];
         }
+        $data = $data['data'];
         return [
             'status' => true,
             'message' => $message,
@@ -83,7 +84,7 @@ if (!function_exists('sendRequestAndThrowExceptionOnFailure')) {
         string $privateKey,
         string $customMessage = null
     ): array {
-        $response = Http::withToken($privateKey)->post($url, $requestBody);
+        $response = Http::acceptJson()->withToken($privateKey)->post($url, $requestBody);
         return processResponseWithException($response, $customMessage);
     }
 }
@@ -98,7 +99,7 @@ if (!function_exists('sendRequestTo')) {
      */
     function sendRequestTo(string $url, array $requestBody, string $privateKey): array
     {
-        $response = Http::withToken($privateKey)->post($url, $requestBody);
+        $response = Http::acceptJson()->withToken($privateKey)->post($url, $requestBody);
         return processResponse($response);
     }
 }

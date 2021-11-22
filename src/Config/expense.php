@@ -2,7 +2,7 @@
 
 return [
     'bvn_model' => '\App\UserProfile',
-    'column' => 'bvn',
+    'bvn_column' => 'bvn',
     'debit_wallet_url' => env('DEBIT_WALLET_TRANSACTION_URL'),
     'debit_wallet_finalize_url' => env('DEBIT_WALLET_FINALIZE_URL'),
     'credit_wallet_url' => env('CREDIT_WALLET_TRANSACTION_URL'),
