@@ -4,13 +4,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'namespace' => 'Credpal\Expense\Http\Controllers',
-    'prefix' => 'expense',
+    'prefix' => 'api/expense',
 ], function () {
     Route::post('transfers', 'TransferController@store');
-    Route::post('webhook/transfers', 'TransferController@webhook');
+    Route::post('webhook/transfers', 'TransfersController@webhook');
 
-	Route::post('airtime-request', 'BaxiController@airtimeRequest');
-
+    Route::post('airtime-request', 'BaxiController@airtimeRequest');
 });
 
 

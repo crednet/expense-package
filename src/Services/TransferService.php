@@ -13,27 +13,27 @@ use Illuminate\Support\Facades\Http;
 
 class TransferService extends ExpenseProcess
 {
-	protected array $credentials;
-	protected array $requestBody;
+    protected array $credentials;
+    protected array $requestBody;
 
-	public function __construct($credentials)
-	{
-		$this->credentials = $credentials;
-		parent::__construct($credentials);
-	}
+    public function __construct($credentials)
+    {
+        $this->credentials = $credentials;
+        parent::__construct($credentials);
+    }
 
-	/**
-	 * @return array
-	 * @throws ExpenseException
-	 */
-	public function makeTransfer(): array
-	{
-		$this->requestBody = [
-			'name' => $this->credentials['name'],
-			'account_number' => $this->credentials['account_number'],
-			'bank_code' => $this->credentials['bank_code'],
-		];
+    /**
+     * @return array
+     * @throws ExpenseException
+     */
+    public function makeTransfer(): array
+    {
+        $this->requestBody = [
+            'account_name' => $this->credentials['account_name'],
+            'account_number' => $this->credentials['account_number'],
+            'bank_code' => $this->credentials['bank_code'],
+        ];
 
-		return $this->initiateTransaction(ENUM::TRANSFER, $this->requestBody);
+        return $this->initiateTransaction(ENUM::TRANSFER, $this->requestBody);
     }
 }
