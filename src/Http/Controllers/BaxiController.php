@@ -5,8 +5,11 @@ namespace Credpal\Expense\Http\Controllers;
 use Credpal\Expense\Exceptions\ExpenseException;
 use Credpal\Expense\Http\Requests\Baxi\AirtimeRequest;
 use Credpal\Expense\Http\Requests\Baxi\DataBundleRequest;
+use Credpal\Expense\Http\Requests\Baxi\ElectricityRequest;
 use Credpal\Expense\Http\Requests\Baxi\MultichoiceAddonRequest;
+use Credpal\Expense\Http\Requests\Baxi\MutltichoiceBundleRequest;
 use Credpal\Expense\Http\Requests\Baxi\VerifyAccountDetailsRequest;
+use Credpal\Expense\Http\Requests\Baxi\VerifyElectricityUserRequest;
 use Credpal\Expense\Services\Bills\BaxiService;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Http\JsonResponse;
@@ -156,6 +159,11 @@ class BaxiController extends Controller
 		return $this->success($result);
 	}
 
+	/**
+	 * @param MultichoiceAddonRequest $request
+	 * @return JsonResponse
+	 * @throws ExpenseException
+	 */
 	public function getMultichoiceAddons(MultichoiceAddonRequest $request): JsonResponse
 	{
 		$credentials = collect($request);
@@ -164,11 +172,53 @@ class BaxiController extends Controller
 		return $this->success($result);
 	}
 
+	/**
+	 * @param MutltichoiceBundleRequest $request
+	 * @return JsonResponse
+	 * @throws ExpenseException
+	 */
 	public function multichoiceRequest(MutltichoiceBundleRequest $request): JsonResponse
 	{
 		$credentials = collect($request);
 		$baxi = new BaxiService($credentials);
 		$result = $baxi->multichoiceRequest();
+		return $this->success($result);
+	}
+
+	/**
+	 * @return JsonResponse
+	 * @throws ExpenseException
+	 */
+	public function getElectricityBillers(): JsonResponse
+	{
+		$url = config('expense.bills_url') . 'baxi/electricity-billers';
+		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
+		return $this->success($result);
+	}
+
+	/**
+	 * @param VerifyElectricityUserRequest $request
+	 * @return JsonResponse
+	 * @throws ExpenseException
+	 */
+	public function verifyElectricityUser(VerifyElectricityUserRequest $request): JsonResponse
+	{
+		$credentials = collect($request);
+		$baxi = new BaxiService($credentials);
+		$result = $baxi->verifyElectricityUser();
+		return $this->success($result);
+	}
+
+	/**
+	 * @param ElectricityRequest $request
+	 * @return JsonResponse
+	 * @throws ExpenseException
+	 */
+	public function electricityRequest(ElectricityRequest $request): JsonResponse
+	{
+		$credentials = collect($request);
+		$baxi = new BaxiService($credentials);
+		$result = $baxi->electricityRequest();
 		return $this->success($result);
 	}
 }

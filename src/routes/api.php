@@ -28,7 +28,9 @@ Route::group([
 	Route::post('multichoice/addons', 'BaxiController@getMultichoiceAddons');
 	Route::post('multichoice-request', 'BaxiController@multichoiceRequest');
 
-
+	Route::get('electricity-billers', 'BaxiController@getElectricityBillers');
+	Route::post('verify-electricity-user', 'BaxiController@verifyElectricityUser');
+	Route::post('electricity-request', 'BaxiController@electricityRequest');
 });
 
 
