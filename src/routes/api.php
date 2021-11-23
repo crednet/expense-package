@@ -2,6 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
+
+    Route::get('/api/expense', function() {
+    	return 'Expense package';
+    });
+
 Route::group([
     'namespace' => 'Credpal\Expense\Http\Controllers',
     'prefix' => 'api/expense',
