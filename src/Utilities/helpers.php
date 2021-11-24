@@ -60,10 +60,10 @@ if (!function_exists('processResponseWithException')) {
         $data = processResponse($response);
         $status = $data['status'];
         $msg = $message ?? $data['message'];
-        if (!$status) {
-            // This will terminate the whole process and notify this user
-            ExpenseError::abortIfUnsuccessfulResponse($msg);
-        }
+		if (isset($data['success']) && !$data['success']) {
+			// This will terminate the whole process and notify this user
+			ExpenseError::abortIfUnsuccessfulResponse($data['message']);
+		}
         return $data;
     }
 }
