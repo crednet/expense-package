@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 class BaxiService extends ExpenseProcess
 {
-    protected array $credentials;
+    protected Collection $credentials;
     protected array $requestBody;
 
     public function __construct($credentials)
