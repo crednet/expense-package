@@ -60,10 +60,10 @@ if (!function_exists('processResponseWithException')) {
         $data = processResponse($response);
         $status = $data['status'];
         $msg = $message ?? $data['message'];
-        if (!$status) {
-            // This will terminate the whole process and notify this user
-            ExpenseError::abortIfUnsuccessfulResponse($msg);
-        }
+		if (isset($data['success']) && !$data['success']) {
+			// This will terminate the whole process and notify this user
+			ExpenseError::abortIfUnsuccessfulResponse($data['message']);
+		}
         return $data;
     }
 }
@@ -91,15 +91,16 @@ if (!function_exists('sendRequestAndThrowExceptionOnFailure')) {
 
 
 if (!function_exists('sendRequestTo')) {
-    /**
-     * @param string $url
-     * @param array $requestBody
-     * @param string $privateKey
-     * @return array
-     */
-    function sendRequestTo(string $url, array $requestBody, string $privateKey): array
+	/**
+	 * @param string $url
+	 * @param array $requestBody
+	 * @param string $privateKey
+	 * @param string $method
+	 * @return array
+	 */
+    function sendRequestTo(string $url, array $requestBody, string $privateKey, string $method = 'post'): array
     {
-        $response = Http::acceptJson()->withToken($privateKey)->post($url, $requestBody);
+        $response = Http::acceptJson()->withToken($privateKey)->$method($url, $requestBody);
         return processResponse($response);
     }
 }
