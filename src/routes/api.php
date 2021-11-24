@@ -33,8 +33,6 @@ Route::group([
 	Route::post('electricity-request', 'BaxiController@electricityRequest');
 });
 
-
-
 //Route::group(['middleware' => 'auth:api', 'prefix' => 'expense-service'], function () {
 //
 //});

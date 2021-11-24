@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Http;
 
 class TransferService extends ExpenseProcess
 {
-    protected array $credentials;
+    protected Collection $credentials;
     protected array $requestBody;
 
     public function __construct($credentials)
