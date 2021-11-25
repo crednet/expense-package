@@ -49,7 +49,7 @@ class TransferController extends Controller
         $credentials->put('description', $request->description ?? null);
         $transfer = new TransferService($credentials);
         $result = $transfer->makeTransfer();
-        return $this->success($result);
+        return $this->success($result['data']);
     }
 
     /**

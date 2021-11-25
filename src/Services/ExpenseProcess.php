@@ -84,8 +84,8 @@ class ExpenseProcess implements ExpenseContract
             ->firstOrFail()
             ->{$bvnColumn};
         $requestBody['amount'] = $this->walletResponse['data']['transaction']['amount'];
-        $requestBody['description'] = $this->walletResponse['data']['description'] ?? $type;
-        $requestBody['reference'] = $this->walletResponse['data']['reference'] ?? $this->reference;
+        $requestBody['description'] = $this->walletResponse['data']['transaction']['description'] ?? $type;
+        $requestBody['reference'] = $this->walletResponse['data']['transaction']['reference'] ?? $this->reference;
 
         $this->expenseResponse = sendRequestTo($transactionUrl, $requestBody, getPrivateKey(Enum::EXPENSE));
         return $this;

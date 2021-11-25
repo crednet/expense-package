@@ -8,6 +8,16 @@ A package to communicate with the expense service
 
 ### Installation
 
+Add this to your package.json file
+```bash
+    "repositories": [
+        {
+            "url": "https://github.com/crednet/expense-package.git",
+            "type": "github"
+        }
+    ]
+```
+
 ```bash
 composer require credpal/expense
 

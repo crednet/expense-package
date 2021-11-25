@@ -4,7 +4,7 @@ namespace Credpal\Expense\Http\Requests\Baxi;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AirtimeRequest extends FormRequest
+class MultichoiceAddonRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,12 +24,8 @@ class AirtimeRequest extends FormRequest
     public function rules(): array
     {
         return [
-//            'bvn' => 'required',
-            'recipient_number' => 'required|string|regex:/[0-9]/',
-            'amount' => 'required|numeric',
             'service_type' => 'required|string',
-            'plan' => 'required|string|in:prepaid,postpaid',
-            'reference' => 'nullable|string',
+            'product_code' => 'required|string',
         ];
     }
 }
