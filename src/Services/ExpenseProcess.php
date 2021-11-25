@@ -14,11 +14,11 @@ class ExpenseProcess implements ExpenseContract
     /**
      * @var Collection
      */
-    private Collection $credentials;
+    protected Collection $credentials;
     /**
      * @var string
      */
-    private $reference;
+    protected $reference;
     /**
      * @var array
      */
@@ -30,7 +30,7 @@ class ExpenseProcess implements ExpenseContract
     /**
      * @var string
      */
-    private $walletType;
+    protected $walletType;
 
     public function __construct(Collection $credentials)
     {
@@ -49,6 +49,7 @@ class ExpenseProcess implements ExpenseContract
         $walletUrl = ($this->walletType === Enum::DEBIT) ?
             config('expense.debit_wallet_url') :
             config('expense.credit_wallet_url');
+
         $requestBody = [
             'wallet_id' => $this->credentials['wallet_id'],
             'cbs_account_number' => $this->credentials['wallet_account_number'] ?? null,
@@ -57,11 +58,13 @@ class ExpenseProcess implements ExpenseContract
             'reference' => $this->reference,
             'description' => $this->credentials['description'] ?? $type
         ];
+
         $this->walletResponse =  sendRequestAndThrowExceptionOnFailure(
             "$walletUrl/{$this->credentials['wallet_id']}/withdraw",
             $requestBody,
             getPrivateKey(Enum::WALLET)
         );
+
         return $this;
     }
 

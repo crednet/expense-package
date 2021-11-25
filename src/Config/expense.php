@@ -1,4 +1,4 @@
-[<?php
+<?php
 
 return [
     'bvn_model' => '\App\UserProfile',

@@ -12,7 +12,7 @@ Route::group([
     'prefix' => 'api/expense',
 ], function () {
     Route::post('transfers', 'TransferController@store');
-    Route::post('webhook/transfers', 'TransfersController@webhook');
+    Route::post('webhook/transfers', 'TransferController@webhook');
 
     Route::get('billers', 'BaxiController@getBillers');
     Route::get('biller-services', 'BaxiController@getBillerServices');
@@ -21,6 +21,17 @@ Route::group([
 
     Route::get('airtime-providers', 'BaxiController@getAirtimeProviders');
     Route::post('airtime-request', 'BaxiController@airtimeRequest');
+    
+    Route::group([
+        'prefix' => 'trips'
+    ], function (){
+        Route::post('search', 'TripsController@search');
+        Route::post('confirm-ticket', 'TripsController@confirmTicket');
+        Route::post('book', 'TripsController@bookTicket');
+        Route::post('cancel-ticket', 'TripsController@cancelTicket');
+        Route::post('flight-rules', 'TripsController@flightRule');
+        Route::post('flight-reservation', 'TripsController@myFlightReservation');
+    });
 
     Route::get('databundle-providers', 'BaxiController@getDatabundleProviders');
     Route::get('provider-bundles/{provider}', 'BaxiController@getBundleByProvider');

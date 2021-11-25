@@ -10,6 +10,8 @@ class Enum
     public const WALLET = 'wallet';
     public const EXPENSE = 'expense';
     public const FAILED = 'failed';
+    public const AIRTIME = 'airtime';
+    public const TRIPS = 'trips';
     public const DATABUNDLE = 'data bundle';
     public const VERIFY_ACCOUNT = 'account verification';
     public const MULTICHOICE_ADDON = 'multichoice addons';

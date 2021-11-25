@@ -60,9 +60,13 @@ if (!function_exists('processResponseWithException')) {
         $data = processResponse($response);
         $status = $data['status'];
         $msg = $message ?? $data['message'];
+        if ($response->status() == \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY) {
+            ExpenseError::setErrors($response->json()['errors']);
+        }
+        
         if (isset($data['success']) && !$data['success'] || !$status) {
             // This will terminate the whole process and notify this user
-            ExpenseError::abortIfUnsuccessfulResponse($data['message']);
+            ExpenseError::abortIfUnsuccessfulResponse($data['message'], $response->status());
         }
         return $data;
     }
