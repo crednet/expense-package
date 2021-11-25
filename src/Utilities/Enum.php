@@ -11,4 +11,5 @@ class Enum
     public const EXPENSE = 'expense';
     public const FAILED = 'failed';
     public const AIRTIME = 'airtime';
+    public const TRIPS = 'trips';
 }
