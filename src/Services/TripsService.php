@@ -16,13 +16,6 @@ class TripsService extends ExpenseProcess
     public const FLIGHT_LOCAL = 'local';
     public const FLIGHT_INTERNATIONAL = 'international';
 
-    public function __construct(Collection $credentials)
-    {
-        $this->credentials = $credentials;
-        $this->walletType = $credentials['wallet_type'] ?? null;
-        $this->reference = $credentials['reference'] ?? getReference();
-    }
-    
     public function search()
     {
         $tripsUrl =  config('expense.trips_url') . 'search';
