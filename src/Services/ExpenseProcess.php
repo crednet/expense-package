@@ -35,7 +35,7 @@ class ExpenseProcess implements ExpenseContract
     public function __construct(Collection $credentials)
     {
         $this->credentials = $credentials;
-        $this->walletType = $credentials['wallet_type'];
+        $this->walletType = $credentials['wallet_type'] ?? null;
         $this->reference = $credentials['reference'] ?? getReference();
     }
 

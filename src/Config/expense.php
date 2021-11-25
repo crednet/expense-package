@@ -11,4 +11,5 @@ return [
     'bills_url' => env('EXPENSE_BILLS_URL'),
     'wallet_private_key' => env('WALLET_PRIVATE_KEY'),
     'expense_private_key' => env('EXPENSE_SERVICE_PRIVATE_KEY'),
+    'trips_url' => env('EXPENSE_TRIPS_URL'),
 ];
