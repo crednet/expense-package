@@ -4,6 +4,7 @@ use Credpal\Expense\Exceptions\ExpenseException;
 use Credpal\Expense\Traits\ExpenseError;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\Response;
 
 define('WITH_EXCEPTION', true);
 define('WITHOUT_EXCEPTION', true);
@@ -60,11 +61,11 @@ if (!function_exists('processResponseWithException')) {
         $data = processResponse($response);
         $status = $data['status'];
         $msg = $message ?? $data['message'];
-        if ($response->status() == \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY) {
+        if ($response->status() === Response::HTTP_UNPROCESSABLE_ENTITY) {
             ExpenseError::setErrors($response->json()['errors']);
         }
         
-        if (isset($data['success']) && !$data['success'] || !$status) {
+        if ((isset($data['success']) && !$data['success']) || !$status) {
             // This will terminate the whole process and notify this user
             ExpenseError::abortIfUnsuccessfulResponse($data['message'], $response->status());
         }
