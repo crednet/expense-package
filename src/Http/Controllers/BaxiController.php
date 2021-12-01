@@ -25,7 +25,7 @@ class BaxiController extends Controller
     public function getBillers(): JsonResponse
     {
         $url = config('expense.bills_url') . 'baxi/billers';
-        $result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
+        $result = sendRequestAndThrowExceptionOnFailure($url, null, getPrivateKey(Enum::EXPENSE), 'get');
         return $this->success($result);
     }
 
