@@ -18,6 +18,17 @@ use Illuminate\Http\Response;
 
 class BaxiController extends Controller
 {
+	/**
+	 * @return JsonResponse
+	 * @throws ExpenseException
+	 */
+	public function getAllBillTransactions(): JsonResponse
+	{
+		$url = config('expense.bills_url') . 'baxi';
+		$result = sendRequestAndThrowExceptionOnFailure($url, null, getPrivateKey(Enum::EXPENSE), 'get');
+		return $this->success($result);
+	}
+
     /**
      * @return JsonResponse
      * @throws ExpenseException
