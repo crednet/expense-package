@@ -23,7 +23,7 @@ class ExpenseProcess implements ExpenseContract
     /**
      * @var string
      */
-    protected $reference;
+    protected string $reference;
     /**
      * @var array
      */
@@ -57,6 +57,7 @@ class ExpenseProcess implements ExpenseContract
             config('expense.debit_wallet_url') :
             config('expense.credit_wallet_url');
         */
+
         if ($this->walletType === Enum::DEBIT) {
             $walletUrl = config('expense.cash.base_url') . 'wallets';
         } elseif($this->walletType === Enum::CREDIT) {

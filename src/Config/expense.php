@@ -3,7 +3,7 @@
 return [
     'bvn_model' => '\App\UserProfile',
     'bvn_column' => 'bvn',
-   'bills_url' => env('EXPENSE_BILLS_URL'),
+	'bills_url' => env('EXPENSE_BILLS_URL'),
 
     'cash' => [
         'base_url' => env('CASH_BASE_URL'),
