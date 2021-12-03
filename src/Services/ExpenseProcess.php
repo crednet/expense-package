@@ -11,6 +11,11 @@ use Illuminate\Support\Collection;
 
 class ExpenseProcess implements ExpenseContract
 {
+//    public const WALLET_TYPE_CREDIT = 'credit_wallet';
+//    public const WALLET_TYPE_CASH = 'debit_wallet';
+
+    public const PAYMENT_METHOD_CREDIT_CARD = 'credpal_card';
+    public const PAYMENT_METHOD_CASH = 'credpal_cash';
     /**
      * @var Collection
      */
@@ -36,7 +41,8 @@ class ExpenseProcess implements ExpenseContract
     {
         $this->credentials = $credentials;
         $this->walletType = $credentials['wallet_type'] ?? null;
-        $this->reference = $credentials['reference'] ?? getReference();
+        $this->reference = getReference();
+        $this->credentials['reference_id'] = $this->reference;
     }
 
     /**
@@ -46,9 +52,16 @@ class ExpenseProcess implements ExpenseContract
      */
     private function withdrawAmount(string $type): ExpenseProcess
     {
+        /*
         $walletUrl = ($this->walletType === Enum::DEBIT) ?
             config('expense.debit_wallet_url') :
             config('expense.credit_wallet_url');
+        */
+        if ($this->walletType === Enum::DEBIT) {
+            $walletUrl = config('expense.cash.base_url') . 'wallets';
+        } elseif($this->walletType === Enum::CREDIT) {
+            // Call method to carry out the normal credit card operations
+        }
 
         $requestBody = [
             'wallet_id' => $this->credentials['wallet_id'],
@@ -59,7 +72,7 @@ class ExpenseProcess implements ExpenseContract
             'description' => $this->credentials['description'] ?? $type
         ];
 
-        $this->walletResponse =  sendRequestAndThrowExceptionOnFailure(
+        $this->walletResponse = sendRequestAndThrowExceptionOnFailure(
             "$walletUrl/{$this->credentials['wallet_id']}/withdraw",
             $requestBody,
             getPrivateKey(Enum::WALLET)
@@ -71,11 +84,15 @@ class ExpenseProcess implements ExpenseContract
     /**
      * @throws ExpenseException
      */
-    private function processTransaction($type, $requestBody, $url = null): ExpenseProcess
+    private function processTransaction(string $type, array $requestBody, string $urlPath): ExpenseProcess
     {
+        /*
         $transactionUrl = ($type === ENUM::TRANSFER) ?
             config('expense.transfer_url') :
             config('expense.bills_url') . $url;
+        */
+        $transactionUrl = config('expense.expense_base_url') . '/' . $urlPath;
+
         $bvnModel = config('expense.bvn_model');
         $bvnColumn = config('expense.bvn_column');
         $bvnInstance = new $bvnModel();
@@ -83,11 +100,13 @@ class ExpenseProcess implements ExpenseContract
             ->whereUserId($this->credentials['user_id'])
             ->firstOrFail()
             ->{$bvnColumn};
+
         $requestBody['amount'] = $this->walletResponse['data']['transaction']['amount'];
         $requestBody['description'] = $this->walletResponse['data']['transaction']['description'] ?? $type;
         $requestBody['reference'] = $this->walletResponse['data']['transaction']['reference'] ?? $this->reference;
 
         $this->expenseResponse = sendRequestTo($transactionUrl, $requestBody, getPrivateKey(Enum::EXPENSE));
+
         return $this;
     }
 
@@ -108,20 +127,30 @@ class ExpenseProcess implements ExpenseContract
     private function reverseWalletAndNotifyUserIfTransactionFailedOnInitiation(array $expenseResponse): void
     {
         $status = $expenseResponse['status'];
-        $reference = $expenseResponse['data']['reference'];
+        
+
+        $reference = $this->reference;//$expenseResponse['data']['reference'];
         if (!$status) {
             // update to reverse wallet if the transfer failed
+            /*
             $walletUpdateUrl = ($this->walletType === Enum::DEBIT) ?
-                config('expense.debit_wallet_finalize_url') :
+                config('expense.cash.base_url') . 'wallets/' . $this->credentials['wallet_id'] :
                 config('expense.credit_wallet_finalize_url');
+            */
+            if ($this->walletType === Enum::DEBIT) {
+                $walletUpdateUrl = config('expense.cash.base_url') . 'wallets/' . $this->credentials['wallet_id'] . '/transactions/' . $this->reference;
+            } elseif ($this->walletType === Enum::CREDIT) {
+                // Credit operations to reverse
+            }
+
             $requestBody = [
                 'reference' => $reference,
-                'status' => Enum::FAILED
+                'status' => 'refunded',//Enum::FAILED
             ];
             // There is an edge case here. Assuming the wallet service was not available at this point. It means
             // it wont be updated/reversed for a while. So that is why jobs and queues should be used,
             // So that whenever it comes online it can pick jobs from the queue
-            sendRequestTo($walletUpdateUrl, $requestBody, getPrivateKey(Enum::WALLET));
+            sendRequestTo($walletUpdateUrl, $requestBody, getPrivateKey(Enum::WALLET), 'put');
         }
     }
 

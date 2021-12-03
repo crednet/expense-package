@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'namespace' => 'Credpal\Expense\Http\Controllers',
     'prefix' => 'api/expense',
+    'middleware' => ['auth:api']
 ], function () {
     Route::post('transfers', 'TransferController@store');
     Route::post('webhook/transfers', 'TransferController@webhook');
@@ -53,6 +54,15 @@ Route::group([
 		Route::post('flight-reservation', 'TripsController@myFlightReservation');
 	});
 
+});
+
+/** ========== Admin Expense Route ========= **/
+Route::group([
+    'namespace' => 'Credpal\Expense\Http\Controllers\Admin',
+    'prefix' => 'api/admin/expense',
+    'middleware' => ['auth:api']
+], function () {
+    Route::get('trips', 'TripsController@index');
 });
 
 //Route::group(['middleware' => 'auth:api', 'prefix' => 'expense-service'], function () {
