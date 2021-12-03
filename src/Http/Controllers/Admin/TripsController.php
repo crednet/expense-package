@@ -10,8 +10,6 @@ class TripsController extends Controller
 {
     public function index()
     {
-        dd("Amdin index");
-
         return $this->datatable(
             Trips::with('user.profile', 'user.company'),
             [

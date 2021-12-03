@@ -58,7 +58,7 @@ class ExpenseProcess implements ExpenseContract
             config('expense.credit_wallet_url');
         */
         if ($this->walletType === Enum::DEBIT) {
-            $walletUrl = config('expense.cash.base_uri') . 'wallets';
+            $walletUrl = config('expense.cash.base_url') . 'wallets';
         } elseif($this->walletType === Enum::CREDIT) {
             // Call method to carry out the normal credit card operations
         }
@@ -91,7 +91,7 @@ class ExpenseProcess implements ExpenseContract
             config('expense.transfer_url') :
             config('expense.bills_url') . $url;
         */
-        $transactionUrl = config('expense.expense_base_uri') . '/' . $urlPath;
+        $transactionUrl = config('expense.expense_base_url') . '/' . $urlPath;
 
         $bvnModel = config('expense.bvn_model');
         $bvnColumn = config('expense.bvn_column');
@@ -134,11 +134,11 @@ class ExpenseProcess implements ExpenseContract
             // update to reverse wallet if the transfer failed
             /*
             $walletUpdateUrl = ($this->walletType === Enum::DEBIT) ?
-                config('expense.cash.base_uri') . 'wallets/' . $this->credentials['wallet_id'] :
+                config('expense.cash.base_url') . 'wallets/' . $this->credentials['wallet_id'] :
                 config('expense.credit_wallet_finalize_url');
             */
             if ($this->walletType === Enum::DEBIT) {
-                $walletUpdateUrl = config('expense.cash.base_uri') . 'wallets/' . $this->credentials['wallet_id'] . '/transactions/' . $this->reference;
+                $walletUpdateUrl = config('expense.cash.base_url') . 'wallets/' . $this->credentials['wallet_id'] . '/transactions/' . $this->reference;
             } elseif ($this->walletType === Enum::CREDIT) {
                 // Credit operations to reverse
             }

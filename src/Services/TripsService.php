@@ -24,7 +24,7 @@ class TripsService extends ExpenseProcess
 
     public function search()
     {
-        $tripsUrl =  config('expense.expense.base_uri') . 'search';
+        $tripsUrl =  config('expense.expense.base_url') . 'search';
         
         $requestBody = $this->credentials;
 
@@ -35,7 +35,7 @@ class TripsService extends ExpenseProcess
     
     public function confirmTicketPrice()
     {
-        $tripsUrl =  config('expense.expense.base_uri') . 'confirm-ticket-price';
+        $tripsUrl =  config('expense.expense.base_url') . 'confirm-ticket-price';
 
         $requestBody = $this->credentials;
 
@@ -48,24 +48,24 @@ class TripsService extends ExpenseProcess
     {
         $requestBody = $this->credentials;
 
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_uri') . 'cancel-ticket', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'cancel-ticket', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
     }
 
     public function bookTicket()
     {
         self::logTripsRequest($this->credentials->toArray());
 
-        return $this->initiateTransaction(Enum::TRIPS, $this->credentials->toArray(), config('expense.expense.base_uri') . 'book-ticket');
+        return $this->initiateTransaction(Enum::TRIPS, $this->credentials->toArray(), config('expense.expense.base_url') . 'book-ticket');
     }
     
     public function flightRules()
     {
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_uri') . 'flight-rules', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'flight-rules', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
     }
 
     public function myReservation()
     {
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_uri') . 'my-reservation', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'my-reservation', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
     }
 
     /**
