@@ -2,7 +2,6 @@
 
 namespace Credpal\Expense\Http\Controllers;
 
-use Credpal\Expense\Facades\CPExpense;
 use Credpal\Expense\Http\Requests\Trips\BookTicketRequest;
 use Credpal\Expense\Http\Requests\Trips\CancelRequest;
 use Credpal\Expense\Http\Requests\Trips\ConfirmTicketPriceRequest;
@@ -10,7 +9,6 @@ use Credpal\Expense\Http\Requests\Trips\FlightReservationRequest;
 use Credpal\Expense\Http\Requests\Trips\FlightRulesRequest;
 use Credpal\Expense\Http\Requests\Trips\SearchRequest;
 use Credpal\Expense\Services\TripsService;
-use Credpal\Expense\Traits\TResponse;
 
 class TripsController extends Controller
 {

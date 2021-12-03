@@ -122,10 +122,10 @@ if (!function_exists('getPrivateKey')) {
     {
         switch ($serviceType) {
             case Enum::WALLET:
-                $key = config('expense.wallet_private_key');
+                $key = config('expense.cash.private_key');
                 break;
             case Enum::EXPENSE:
-                $key = config('expense.expense_private_key');
+                $key = config('expense.expense.private_key');
                 break;
             default:
                 $key = null;

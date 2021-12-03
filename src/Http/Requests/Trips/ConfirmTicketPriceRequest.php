@@ -25,10 +25,6 @@ class ConfirmTicketPriceRequest extends FormRequest
      */
     public function rules()
     {
-//        $amountRule =
-//            $this->route()->getActionName() === 'Credpal\Expense\Http\Controllers\TripsController@bookTicket'
-//                ? ['required', 'regex:/^\d+(\.\d{1,2})?$/'] : [];
-        
         return [
             'flight_type' => 'required|in:' . TripsService::FLIGHT_INTERNATIONAL . ',' . TripsService::FLIGHT_LOCAL,
             'agent_id' => ['required_if:flight_type,' . TripsService::FLIGHT_INTERNATIONAL, 'integer'],
@@ -42,8 +38,6 @@ class ConfirmTicketPriceRequest extends FormRequest
             'selected_flights.*.agent_id' => ['required_if:flight_type,' . TripsService::FLIGHT_LOCAL, 'integer'],
             'selected_flights.*.gds_i_d' => ['required_if:flight_type,' . TripsService::FLIGHT_LOCAL, 'integer'],
             'selected_flights.*.flight_route_index' => ['required', 'integer'],
-//            'amount' => $amountRule,
-            'bvn' => ['required', 'digits:11'],
             'air_travellers' => ['required', 'array'],
             'air_travellers.*.passenger_type_code' => [
                 'required',
@@ -52,6 +46,7 @@ class ConfirmTicketPriceRequest extends FormRequest
             ],
             'air_travellers.*.last_name' => ['required'],
             'air_travellers.*.first_name' => ['required'],
+            'air_travellers.*.middle_name' => ['nullable'],
             'air_travellers.*.birth_date' => ['required', 'date'],
             'air_travellers.*.name_prefix' => ['required'],
             'air_travellers.*.gender' => ['required'],
