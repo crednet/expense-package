@@ -2,7 +2,6 @@
 
 namespace Credpal\Expense\Models;
 
-use App\Utilities\Enum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,20 +19,19 @@ class Trips extends Model
         //
     ];
 
-    /**
-     * @param int $clientId
-     * @param int $bvn
-     * @param int $amount
-     * @param string $serviceProvider
-     * @param string $reference
-     * @param string $type
-     * @param string $status
-     * @param string $url
-     * @param string|null $recipientNumber
-     * @param string|null $description
-     * @param string|null $transactionReference
-     * @param null $data
-     */
+	/**
+	 * @param int $userId
+	 * @param int $accountId
+	 * @param string $userType
+	 * @param int $amount
+	 * @param string $reference
+	 * @param string $sessionId
+	 * @param string $type
+	 * @param string $status
+	 * @param string $paymentMethod
+	 * @param string|null $recipientNumber
+	 * @param array|null $requestData
+	 */
     public static function transactionLogger(
         int $userId,
         int $accountId,
