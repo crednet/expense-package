@@ -2,11 +2,8 @@
 
 return [
 	'bvn_model' => '\App\UserProfile',
-	'personal_card_account_model' => '\App\PersonalCardAccount',
-	'statement_service' => '\App\Services\V2\CreditCard\StatementService',
-	'reconciliation_service' => '\App\Services\ReconciliationService',
+	'bill_transactions_model' => '\App\BillTransaction',
 	'bvn_column' => 'bvn',
-	'bills_url' => env('EXPENSE_BILLS_URL'),
 
 	'cash' => [
 		'base_url' => env('CASH_BASE_URL'),
