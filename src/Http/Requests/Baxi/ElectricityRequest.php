@@ -27,7 +27,7 @@ class ElectricityRequest extends FormRequest
 			'user_id' => 'required|exists:users,id',
             'account_number' => 'required|numeric',
             'amount' => 'required|numeric',
-            'recipient_number' => 'required|string|regex:/[0-9]/',
+            'phone' => 'required|string|regex:/[0-9]/',
             'service_type' => 'required|string',
             'reference' => 'nullable|string',
         ];

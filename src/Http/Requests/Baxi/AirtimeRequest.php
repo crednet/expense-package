@@ -25,7 +25,7 @@ class AirtimeRequest extends FormRequest
     {
         return [
 			'user_id' => 'required|exists:users,id',
-            'recipient_number' => 'required|string|regex:/[0-9]/',
+            'phone' => 'required|string|regex:/[0-9]/',
             'amount' => 'required|numeric',
             'service_type' => 'required|string',
             'plan' => 'required|string|in:prepaid,postpaid',

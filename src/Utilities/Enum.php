@@ -9,7 +9,9 @@ class Enum
     public const TRANSFER = 'transfer';
     public const WALLET = 'wallet';
     public const EXPENSE = 'expense';
-    public const FAILED = 'failed';
+	public const FAILED = 'failed';
+	public const PENDING = 'pending';
+	public const SUCCESS = 'success';
     public const AIRTIME = 'airtime';
     public const TRIPS = 'trips';
     public const DATABUNDLE = 'data bundle';
