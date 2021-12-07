@@ -5,7 +5,6 @@ use Credpal\Expense\Traits\ExpenseError;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
-
 define('WITH_EXCEPTION', true);
 define('WITHOUT_EXCEPTION', true);
 

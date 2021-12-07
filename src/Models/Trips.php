@@ -20,6 +20,11 @@ class Trips extends Model
         //
     ];
 
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id');
+    }
+
     /**
      * @param int $clientId
      * @param int $bvn
@@ -74,5 +79,10 @@ class Trips extends Model
 //                'data' => $data,
             ]
         );
+    }
+    
+    public function tripsTravellers()
+    {
+        return $this->hasMany(TripsTravellers::class, "trip_id");
     }
 }

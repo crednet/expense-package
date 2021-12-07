@@ -56,7 +56,7 @@ class ConfirmTicketPriceRequest extends FormRequest
             'air_travellers.*.address.address_line_2' => ['nullable'],
             'air_travellers.*.address.city' => ['required'],
             'air_travellers.*.address.country_code' => ['required'],
-            'air_travellers.*.documents' => ['sometimes', 'required', 'array'],
+            'air_travellers.*.documents' => ['required_if:flight_type,' . TripsService::FLIGHT_INTERNATIONAL, 'array'],
             'air_travellers.*.documents.*.doc_type' => ['in:DOCS,DOCO,DACA'],
             'air_travellers.*.documents.*.issue_location' => [ 'size:3'],
             'air_travellers.*.documents.*.birth_country_code' => ['size:3'],

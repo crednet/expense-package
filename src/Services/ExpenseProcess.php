@@ -11,9 +11,6 @@ use Illuminate\Support\Collection;
 
 class ExpenseProcess implements ExpenseContract
 {
-//    public const WALLET_TYPE_CREDIT = 'credit_wallet';
-//    public const WALLET_TYPE_CASH = 'debit_wallet';
-
     public const PAYMENT_METHOD_CREDIT_CARD = 'credpal_card';
     public const PAYMENT_METHOD_CASH = 'credpal_cash';
     /**
@@ -91,7 +88,7 @@ class ExpenseProcess implements ExpenseContract
             config('expense.transfer_url') :
             config('expense.bills_url') . $url;
         */
-        $transactionUrl = config('expense.expense_base_url') . '/' . $urlPath;
+        $transactionUrl = config('expense.expense.base_url') . $urlPath;
 
         $bvnModel = config('expense.bvn_model');
         $bvnColumn = config('expense.bvn_column');

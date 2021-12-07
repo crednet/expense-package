@@ -24,22 +24,16 @@ class TripsService extends ExpenseProcess
 
     public function search()
     {
-        $tripsUrl =  config('expense.expense.base_url') . 'search';
-        
         $requestBody = $this->credentials;
 
-        $expenseResponse = sendRequestAndThrowExceptionOnFailure($tripsUrl, $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
-
-        return $expenseResponse;
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'trips/search', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
     }
     
     public function confirmTicketPrice()
     {
-        $tripsUrl =  config('expense.expense.base_url') . 'confirm-ticket-price';
-
         $requestBody = $this->credentials;
 
-        $expenseResponse = sendRequestAndThrowExceptionOnFailure($tripsUrl, $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
+        $expenseResponse = sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'trips/confirm-ticket-price', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
 
         return $expenseResponse;
     }
@@ -48,14 +42,20 @@ class TripsService extends ExpenseProcess
     {
         $requestBody = $this->credentials;
 
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'cancel-ticket', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'trips/cancel-ticket', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
     }
 
     public function bookTicket()
     {
         self::logTripsRequest($this->credentials->toArray());
 
-        return $this->initiateTransaction(Enum::TRIPS, $this->credentials->toArray(), config('expense.expense.base_url') . 'book-ticket');
+        $bookTicket = $this->initiateTransaction(Enum::TRIPS, $this->credentials->toArray(),  'trips/book-ticket');
+
+        if ($bookTicket['status']){
+            $this->updateTripsRequestLog($bookTicket['data'], Enum::SUCCESS);
+        }
+        
+        return $bookTicket;
     }
     
     public function flightRules()
@@ -81,10 +81,8 @@ class TripsService extends ExpenseProcess
      * @param string|null $recipientNumber
      * @param null $data
      */
-    public function logTripsRequest(array $data) : bool
+    public function logTripsRequest(array $data) : Trips
     {
-//        $markupPercentage = (float) Configuration::value('trips_mark_up_percentage', 0);
-//        $markupPrice = ($markupPercentage/100) * $data["amount"];
         try {
             DB::beginTransaction();
 
@@ -93,13 +91,14 @@ class TripsService extends ExpenseProcess
                     'user_id' => $data['user_id'],
                     'account_id' => $data['account_id'] ?? null,
                     'wallet_id' => $data['wallet_id'] ?? null,
+                    'wallet_type' => $data["wallet_type"],
                     'user_type' => "personal",//$data['user_type'],
                     'amount' => $data['amount'],
                     'mark_up_percentage' => Configuration::value('trips_mark_up_percentage', 0),
                     'reference' => $this->reference,
                     'session_id' => $data['session_id'],
-                    'type' => $data['type'],
-                    'status' => 'pending',
+                    'type' => $data['type'] . '-' . $data['flight_type'],
+                    'status' => Enum::PENDING,
                     'payment_method' => $data['payment_method'],
                     'recipient_number' => $data['billing_address']['contact_mobile_no'],
                     'address' => $data['billing_address']['address_line_1'],
@@ -114,6 +113,7 @@ class TripsService extends ExpenseProcess
             foreach ($data['air_travellers'] as $traveller)
             {
                 TripsTravellers::create([
+                    "trip_id" => $trips->id,
                     "passenger_type_code" => $traveller["passenger_type_code"],
                     "first_name" => $traveller["first_name"],
                     "last_name" => $traveller["last_name"],
@@ -128,12 +128,50 @@ class TripsService extends ExpenseProcess
 
             DB::commit();
 
-            return true;
+            return $trips;
         } catch (\Exception $e) {
             DB::rollBack();
             throw new ExpenseException($e);
         }
+    }
 
-        return false;
+    public function updateTripsRequestLog($data, $status)
+    {
+        $trips = Trips::where('reference', $this->reference)->firstOrFail();
+
+        if ($this->credentials["flight_type"] == TripsService::FLIGHT_LOCAL) {
+            $data = $data[0];
+        }
+
+        $flightDetails = $data['flight_sets'][0]['flight_entries'][0];
+        $airTravellers = $data["air_travellers"];
+
+
+        $trips->update([
+            "reference_number" => $data["reference_number"],
+            "booking_reference_id" => $data["booking_reference_id"],
+            "booking_reference_type" => $data["booking_reference_type"],
+            "ticket_time_limit" => $data["ticket_time_limit"],
+            'response_data' => json_encode($data),
+            'status' => $status,
+            'departure_airport_code' => $flightDetails['departure_airport_code'],
+            'departure_airport_name' => $flightDetails['departure_airport_name'],
+            'arrival_airport_code' => $flightDetails['arrival_airport_code'],
+            'arrival_airport_name' => $flightDetails['arrival_airport_name'],
+            'departure_date' => $flightDetails['departure_date'],
+            'arrival_date' => $flightDetails['arrival_date'],
+        ]);
+
+        foreach ($airTravellers as $air_traveller) {
+            $traveller = TripsTravellers::where('trip_id', $trips->id)
+                ->where('first_name', $air_traveller["first_name"])
+                ->where('last_name', $air_traveller["last_name"])
+                ->where('dob', substr($air_traveller["birth_date"], 0, 10))
+                ->first();
+
+            $traveller->e_ticket_number = $air_traveller["e_ticket_number"];
+            $traveller->traveller_reference_id = $air_traveller["traveller_reference_id"];
+            $traveller->save();
+        }
     }
 }
