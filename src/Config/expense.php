@@ -3,6 +3,7 @@
 return [
 	'bvn_model' => '\App\UserProfile',
 	'bill_transactions_model' => '\App\BillTransaction',
+	'credit_card_transaction' => '\App\Services\V2\CreditCard\CreditCardTransactionService',
 	'bvn_column' => 'bvn',
 
 	'cash' => [

@@ -11,11 +11,6 @@ use Illuminate\Support\Collection;
 
 class ExpenseProcess implements ExpenseContract
 {
-//    public const WALLET_TYPE_CREDIT = 'credit_wallet';
-//    public const WALLET_TYPE_CASH = 'debit_wallet';
-
-//	public const PAYMENT_METHOD_CREDIT_CARD = 'credpal_card';
-//	public const PAYMENT_METHOD_CASH = 'credpal_cash';
 	/**
 	 * @var Collection
 	 */
@@ -37,12 +32,24 @@ class ExpenseProcess implements ExpenseContract
 	 */
 	protected $walletType;
 
+	protected $creditCardTransaction;
+
+	protected string $type;
+
 	public function __construct(Collection $credentials)
 	{
 		$this->credentials = $credentials;
 		$this->walletType = $credentials['wallet_type'] ?? null;
 		$this->reference = getReference();
 		$this->credentials['reference'] = $this->reference;
+		if ($this->walletType === Enum::CREDIT) {
+			$creditCardTransactionModel = config('expense.credit_card_transaction');
+			$this->creditCardTransaction =
+				new $creditCardTransactionModel(
+					$this->credentials['account_id'],
+					$this->credentials['amount']
+				);
+		}
 	}
 
 	/**
@@ -67,6 +74,7 @@ class ExpenseProcess implements ExpenseContract
 		if ($this->walletType === Enum::DEBIT) {
 			$this->withdrawFromCash($requestBody);
 		} elseif($this->walletType === Enum::CREDIT) {
+			$this->type = $type;
 			$this->withdrawFromCredit($requestBody);
 		}
 
@@ -93,9 +101,8 @@ class ExpenseProcess implements ExpenseContract
 
 	private function withdrawFromCredit($requestBody): void
 	{
-		$requestBody['user_id'] = $this->credentials['user_id'];
-		$requestBody['account_id'] = $this->credentials['account_id'];
-		// operation on credit card goes here
+		$this->creditCardTransaction->checkLocalAccount();
+		$this->creditCardTransaction->makeWithdrawal();
 	}
 
 	/**
@@ -123,6 +130,7 @@ class ExpenseProcess implements ExpenseContract
 		$requestBody['reference'] = $this->reference ?? $this->walletResponse['data']['transaction']['reference'];
 
 		$this->expenseResponse = sendRequestTo($transactionUrl, $requestBody, getPrivateKey(Enum::EXPENSE));
+
 		return $this;
 	}
 
@@ -184,7 +192,11 @@ class ExpenseProcess implements ExpenseContract
 
 	private function reverseCredit($status, $reference): void
 	{
-		// update credit card account for a reversal
+		$this->creditCardTransaction->updateAccount(
+			$this->credentials['account_id'],
+			$this->credentials['amount'],
+			$status
+		);
 	}
 
 
@@ -201,6 +213,17 @@ class ExpenseProcess implements ExpenseContract
 			throw new ExpenseException(
 				trans('expense::exception.unsuccessful_transaction'),
 				Response::HTTP_PRECONDITION_FAILED
+			);
+		}
+//		if ($this->walletType === Enum::DEBIT) {
+
+		if($this->walletType === Enum::CREDIT) {
+			$this->creditCardTransaction->logTransactions(
+				$this->credentials['account_id'],
+				$this->credentials['amount'],
+				$status,
+				$this->type,
+				$this->credentials['description'] ?? null
 			);
 		}
 		return $expenseResponse;
