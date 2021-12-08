@@ -34,6 +34,6 @@ class TransferService extends ExpenseProcess
             'bank_code' => $this->credentials['bank_code'],
         ];
 
-        return $this->initiateTransaction(ENUM::TRANSFER, $this->requestBody);
+        return $this->initiateTransaction(ENUM::TRANSFER, $this->requestBody, 'transfers');
     }
 }

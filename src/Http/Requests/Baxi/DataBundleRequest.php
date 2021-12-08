@@ -22,7 +22,8 @@ class DataBundleRequest
     public function rules(): array
     {
         return [
-            'recipient_number' => 'required|string|regex:/[0-9]/',
+			'user_id' => 'required|exists:users,id',
+            'phone' => 'required|string|regex:/[0-9]/',
             'amount' => 'required|numeric',
             'service_type' => 'required|string',
             'datacode' => 'required',

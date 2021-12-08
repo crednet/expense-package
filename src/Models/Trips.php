@@ -2,7 +2,6 @@
 
 namespace Credpal\Expense\Models;
 
-use App\Utilities\Enum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

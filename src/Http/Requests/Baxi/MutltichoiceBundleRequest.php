@@ -24,6 +24,7 @@ class MutltichoiceBundleRequest extends FormRequest
     public function rules(): array
     {
         return [
+			'user_id' => 'required|exists:users,id',
             'smartcard_number' => 'required|string|regex:/[0-9]/',
             'total_amount' => 'required|numeric',
             'product_code' => 'required|string',

@@ -15,39 +15,45 @@ Route::group([
     Route::post('transfers', 'TransferController@store');
     Route::post('webhook/transfers', 'TransferController@webhook');
 
-    Route::get('billers', 'BaxiController@getBillers');
-    Route::get('biller-services', 'BaxiController@getBillerServices');
-    Route::get('biller-categories', 'BaxiController@getAllBillerCategory');
-    Route::get('biller-by-category/{category}', 'BaxiController@getBillerByCategory');
+	Route::group([
+		'prefix' => 'bills'
+	], function (){
+		Route::get('transactions', 'BaxiController@getAllBillTransactions');
+		Route::get('billers', 'BaxiController@getBillers');
+		Route::get('biller-services', 'BaxiController@getBillerServices');
+		Route::get('biller-categories', 'BaxiController@getAllBillerCategory');
+		Route::get('biller-by-category/{category}', 'BaxiController@getBillerByCategory');
 
-    Route::get('airtime-providers', 'BaxiController@getAirtimeProviders');
-    Route::post('airtime-request', 'BaxiController@airtimeRequest');
-    
-    Route::group([
-        'prefix' => 'trips'
-    ], function (){
-        Route::post('search', 'TripsController@search');
-        Route::post('confirm-ticket', 'TripsController@confirmTicket');
-        Route::post('book', 'TripsController@bookTicket');
-        Route::post('cancel-ticket', 'TripsController@cancelTicket');
-        Route::post('flight-rules', 'TripsController@flightRule');
-        Route::post('flight-reservation', 'TripsController@myFlightReservation');
-    });
+		Route::get('airtime-providers', 'BaxiController@getAirtimeProviders');
+		Route::post('airtime-request', 'BaxiController@airtimeRequest');
 
-    Route::get('databundle-providers', 'BaxiController@getDatabundleProviders');
-    Route::get('provider-bundles/{provider}', 'BaxiController@getBundleByProvider');
-    Route::post('databundle-request', 'BaxiController@dataBundleRequest');
+		Route::get('databundle-providers', 'BaxiController@getDatabundleProviders');
+		Route::get('provider-bundles/{provider}', 'BaxiController@getBundleByProvider');
+		Route::post('databundle-request', 'BaxiController@dataBundleRequest');
 
-    Route::post('verify-account-details', 'BaxiController@verifyAccountDetails');
+		Route::post('verify-account-details', 'BaxiController@verifyAccountDetails');
 
-    Route::get('cabletv-providers', 'BaxiController@getCabletvProviders');
-    Route::get('multichoice-bundles-list/{provider}', 'BaxiController@getMultichoiceBundles');
-    Route::post('multichoice/addons', 'BaxiController@getMultichoiceAddons');
-    Route::post('multichoice-request', 'BaxiController@multichoiceRequest');
+		Route::get('cabletv-providers', 'BaxiController@getCabletvProviders');
+		Route::get('multichoice-bundles-list/{provider}', 'BaxiController@getMultichoiceBundles');
+		Route::post('multichoice/addons', 'BaxiController@getMultichoiceAddons');
+		Route::post('multichoice-request', 'BaxiController@multichoiceRequest');
 
-    Route::get('electricity-billers', 'BaxiController@getElectricityBillers');
-    Route::post('verify-electricity-user', 'BaxiController@verifyElectricityUser');
-    Route::post('electricity-request', 'BaxiController@electricityRequest');
+		Route::get('electricity-billers', 'BaxiController@getElectricityBillers');
+		Route::post('verify-electricity-user', 'BaxiController@verifyElectricityUser');
+		Route::post('electricity-request', 'BaxiController@electricityRequest');
+	});
+
+	Route::group([
+		'prefix' => 'trips'
+	], function (){
+		Route::post('search', 'TripsController@search');
+		Route::post('confirm-ticket', 'TripsController@confirmTicket');
+		Route::post('book', 'TripsController@bookTicket');
+		Route::post('cancel-ticket', 'TripsController@cancelTicket');
+		Route::post('flight-rules', 'TripsController@flightRule');
+		Route::post('flight-reservation', 'TripsController@myFlightReservation');
+	});
+
 });
 
 /** ========== Admin Expense Route ========= **/

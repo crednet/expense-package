@@ -26,11 +26,11 @@ class BaxiService extends ExpenseProcess
     public function requestAirtime(): array
     {
         $this->requestBody = [
-            'recipient_number' => $this->credentials['recipient_number'],
+            'phone' => $this->credentials['phone'],
             'service_type' => $this->credentials['service_type'],
             'plan' => $this->credentials['plan'],
         ];
-        return $this->initiateTransaction(ENUM::AIRTIME, $this->requestBody, 'baxi/airtime-request');
+        return $this->initiateTransaction(ENUM::AIRTIME, $this->requestBody, 'bills/baxi/airtime-request');
     }
 
     /**
@@ -40,11 +40,11 @@ class BaxiService extends ExpenseProcess
     public function requestDatabundle(): array
     {
         $this->requestBody = [
-            'recipient_number' => $this->credentials['recipient_number'],
+            'phone' => $this->credentials['phone'],
             'service_type' => $this->credentials['service_type'],
             'datacode' => $this->credentials['datacode'],
         ];
-        return $this->initiateTransaction(ENUM::DATABUNDLE, $this->requestBody, 'baxi/databundle-request');
+        return $this->initiateTransaction(ENUM::DATABUNDLE, $this->requestBody, 'bills/baxi/databundle-request');
     }
 
     /**
@@ -57,7 +57,7 @@ class BaxiService extends ExpenseProcess
             'service_type' => $this->credentials['service_type'],
             'account_number' => $this->credentials['account_number'],
         ];
-        return $this->initiateTransaction(ENUM::VERIFY_ACCOUNT, $this->requestBody, 'baxi/verify-account-details');
+        return $this->initiateTransaction(ENUM::VERIFY_ACCOUNT, $this->requestBody, 'bills/baxi/verify-account-details');
     }
 
     /**
@@ -70,7 +70,7 @@ class BaxiService extends ExpenseProcess
             'service_type' => $this->credentials['service_type'],
             'product_code' => $this->credentials['product_code'],
         ];
-        return $this->initiateTransaction(ENUM::MULTICHOICE_ADDON, $this->requestBody, 'baxi/multichoice/addons');
+        return $this->initiateTransaction(ENUM::MULTICHOICE_ADDON, $this->requestBody, 'bills/baxi/multichoice/addons');
     }
 
     /**
@@ -88,7 +88,7 @@ class BaxiService extends ExpenseProcess
             'addon_monthsPaidFor' => $this->credentials['addon_monthsPaidFor'],
             'service_type' => $this->credentials['service_type'],
         ];
-        return $this->initiateTransaction(ENUM::MULTICHOICE_SUBSCRIPTION, $this->requestBody, 'baxi/multichoice-request');
+        return $this->initiateTransaction(ENUM::MULTICHOICE_SUBSCRIPTION, $this->requestBody, 'bills/baxi/multichoice-request');
     }
 
     /**
@@ -101,7 +101,7 @@ class BaxiService extends ExpenseProcess
             'service_type' => $this->credentials['service_type'],
             'account_number' => $this->credentials['account_number'],
         ];
-        return $this->initiateTransaction(ENUM::VERIFY_ELECTRICITY, $this->requestBody, 'baxi/verify-electricity-user');
+        return $this->initiateTransaction(ENUM::VERIFY_ELECTRICITY, $this->requestBody, 'bills/baxi/verify-electricity-user');
     }
 
     /**
@@ -113,8 +113,8 @@ class BaxiService extends ExpenseProcess
         $this->requestBody = [
             'service_type' => $this->credentials['service_type'],
             'account_number' => $this->credentials['account_number'],
-            'recipient_number' => $this->credentials['recipient_number'],
+            'phone' => $this->credentials['phone'],
         ];
-        return $this->initiateTransaction(ENUM::ELECTRICITY_REQUEST, $this->requestBody, 'baxi/verify-electricity-user');
+        return $this->initiateTransaction(ENUM::ELECTRICITY_REQUEST, $this->requestBody, 'bills/baxi/verify-electricity-user');
     }
 }

@@ -74,21 +74,23 @@ if (!function_exists('processResponseWithException')) {
 
 
 if (!function_exists('sendRequestAndThrowExceptionOnFailure')) {
-    /**
-     * @param string $url
-     * @param array $requestBody
-     * @param string $privateKey
-     * @param null|string $customMessage
-     * @return array
-     * @throws ExpenseException
-     */
+	/**
+	 * @param string $url
+	 * @param array|null $requestBody
+	 * @param string $privateKey
+	 * @param string $method
+	 * @param null|string $customMessage
+	 * @return array
+	 * @throws ExpenseException
+	 */
     function sendRequestAndThrowExceptionOnFailure(
         string $url,
-        array $requestBody,
-        string $privateKey,
+        ?array $requestBody,
+		string $privateKey,
+		string $method = 'post',
         string $customMessage = null
     ): array {
-        $response = Http::acceptJson()->withToken($privateKey)->post($url, $requestBody);
+        $response = Http::acceptJson()->withToken($privateKey)->$method($url, $requestBody);
         return processResponseWithException($response, $customMessage);
     }
 }
