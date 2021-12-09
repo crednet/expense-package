@@ -223,7 +223,7 @@ class ExpenseProcess implements ExpenseContract
 				$this->credentials['amount'],
 				$status,
 				$this->type,
-				$this->credentials['description'] ?? null
+				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type
 			);
 		}
 		return $expenseResponse;
