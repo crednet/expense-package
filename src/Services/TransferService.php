@@ -18,7 +18,6 @@ class TransferService extends ExpenseProcess
 
     public function __construct($credentials)
     {
-        $this->credentials = $credentials;
         parent::__construct($credentials);
     }
 
