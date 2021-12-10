@@ -2,7 +2,6 @@
 
 namespace Credpal\Expense\Services;
 
-use App\UserProfile;
 use Credpal\Expense\Contract\ExpenseContract;
 use Credpal\Expense\Exceptions\ExpenseException;
 use Credpal\Expense\Utilities\Enum;
@@ -42,14 +41,12 @@ class ExpenseProcess implements ExpenseContract
 		$this->walletType = $credentials['wallet_type'] ?? null;
 		$this->reference = getReference();
 		$this->credentials['reference'] = $this->reference;
-		if ($this->walletType === Enum::CREDIT) {
-			$creditCardTransactionModel = config('expense.credit_card_transaction');
-			$this->creditCardTransaction =
-				new $creditCardTransactionModel(
-					$this->credentials['account_id'],
-					$this->credentials['amount']
-				);
-		}
+		$creditCardTransactionModel = config('expense.credit_card_transaction');
+		$this->creditCardTransaction =
+			new $creditCardTransactionModel(
+				$this->credentials['amount'],
+				$this->credentials['account_id'] ?? null,
+			);
 	}
 
 	/**
@@ -71,10 +68,11 @@ class ExpenseProcess implements ExpenseContract
 			'description' => $this->credentials['description'] ?? $type
 		];
 
+		$this->type = $type;
+
 		if ($this->walletType === Enum::DEBIT) {
 			$this->withdrawFromCash($requestBody);
 		} elseif($this->walletType === Enum::CREDIT) {
-			$this->type = $type;
 			$this->withdrawFromCredit($requestBody);
 		}
 
@@ -215,17 +213,26 @@ class ExpenseProcess implements ExpenseContract
 				Response::HTTP_PRECONDITION_FAILED
 			);
 		}
-//		if ($this->walletType === Enum::DEBIT) {
 
-		if($this->walletType === Enum::CREDIT) {
+		if ($this->walletType === Enum::DEBIT) {
+			$this->creditCardTransaction->logTransactionsForCash(
+				'credpal_cash',
+				$this->credentials['amount'],
+				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type,
+				$this->type,
+				$this->credentials['wallet_id']
+			);
+		} elseif($this->walletType === Enum::CREDIT) {
 			$this->creditCardTransaction->logTransactions(
 				$this->credentials['account_id'],
+				'credpal_card',
 				$this->credentials['amount'],
 				$status,
 				$this->type,
 				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type
 			);
 		}
+
 		return $expenseResponse;
 	}
 
