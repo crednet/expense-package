@@ -15,7 +15,7 @@ class TripsController extends Controller
             [
                 "search" => function ($query, $searchString) {
                     $query->whereHas('user', function ($user) use ($searchString) {
-                        $user->orWhereRaw("CONCAT(name, ' ', last_name) like '%{$searchString}%'")
+                        $user->whereRaw("CONCAT(name, ' ', last_name) like '%{$searchString}%'")
                             ->orwhere('id', 'like', "%{$searchString}%")
                             ->orwhere('last_name', 'like', "%{$searchString}%")
                             ->orwhere('email', 'like', "%{$searchString}%")

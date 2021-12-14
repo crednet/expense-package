@@ -3,6 +3,7 @@
 namespace Credpal\Expense\Services\Bills;
 
 use Credpal\Expense\Exceptions\ExpenseException;
+use Credpal\Expense\Services\DuplicateTransactionService;
 use Credpal\Expense\Services\ExpenseProcess;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Http\Response;
@@ -26,6 +27,12 @@ class BaxiService extends ExpenseProcess
 	 */
 	public function requestAirtime(): array
 	{
+        DuplicateTransactionService::checkDuplicateTransaction(
+            Enum::AIRTIME,
+            $this->credentials['phone'],
+            $this->credentials->toArray()
+        );
+        
 		$this->requestBody = [
 			'phone' => $this->credentials['phone'],
 			'service_type' => $this->credentials['service_type'],

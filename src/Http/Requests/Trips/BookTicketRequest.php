@@ -30,7 +30,6 @@ class BookTicketRequest extends FormRequest
         $confirmTicketRequest = new ConfirmTicketPriceRequest();
         $rules = array_merge($confirmTicketRequest->rules(), [
             'amount' => ['required', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'payment_method' => ['required', Rule::in(ExpenseProcess::PAYMENT_METHOD_CASH, ExpenseProcess::PAYMENT_METHOD_CREDIT_CARD)],
             'wallet_type' => ['required', Rule::in(Enum::DEBIT, Enum::CREDIT)],
             'wallet_id' => ['required_if:wallet_type,' . Enum::DEBIT],
             'user_id' => ['required', 'exists:users,id'],

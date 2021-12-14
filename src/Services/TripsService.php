@@ -26,14 +26,14 @@ class TripsService extends ExpenseProcess
     {
         $requestBody = $this->credentials;
 
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'trips/search', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/trips/search', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
     }
     
     public function confirmTicketPrice()
     {
         $requestBody = $this->credentials;
 
-        $expenseResponse = sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'trips/confirm-ticket-price', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
+        $expenseResponse = sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/trips/confirm-ticket-price', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
 
         return $expenseResponse;
     }
@@ -42,11 +42,13 @@ class TripsService extends ExpenseProcess
     {
         $requestBody = $this->credentials;
 
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'trips/cancel-ticket', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/trips/cancel-ticket', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
     }
 
     public function bookTicket()
     {
+        $this->credentials['description'] = "Trips - " . $this->credentials['flight_type'];
+
         self::logTripsRequest($this->credentials->toArray());
 
         $bookTicket = $this->initiateTransaction(Enum::TRIPS, $this->credentials->toArray(),  'trips/book-ticket');
@@ -60,12 +62,12 @@ class TripsService extends ExpenseProcess
     
     public function flightRules()
     {
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'flight-rules', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/flight-rules', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
     }
 
     public function myReservation()
     {
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . 'my-reservation', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
+        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/my-reservation', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
     }
 
     /**
@@ -99,7 +101,6 @@ class TripsService extends ExpenseProcess
                     'session_id' => $data['session_id'],
                     'type' => $data['type'] . '-' . $data['flight_type'],
                     'status' => Enum::PENDING,
-                    'payment_method' => $data['payment_method'],
                     'recipient_number' => $data['billing_address']['contact_mobile_no'],
                     'address' => $data['billing_address']['address_line_1'],
                     'city' => $data['billing_address']['city'],
@@ -122,7 +123,7 @@ class TripsService extends ExpenseProcess
                     "title" => $traveller["name_prefix"],
                     "gender" => $traveller["gender"],
                     "address" => json_encode($traveller["address"]),
-                    "documents" => json_encode($traveller["documents"]),
+                    "documents" => json_encode($traveller["documents"] ?? []),
                 ]);
             }
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 
 trait ExpenseError
 {
+    public static $error;
 
     /**
      * @throws ExpenseException
@@ -44,6 +45,6 @@ trait ExpenseError
     {
         return self::$error;
     }
-    
+
     
 }
