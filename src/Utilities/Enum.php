@@ -20,6 +20,5 @@ class Enum
     public const MULTICHOICE_SUBSCRIPTION = 'multichoice subscription';
     public const ELECTRICITY_REQUEST = 'electricity request';
     public const VERIFY_ELECTRICITY = 'verify electricity';
-    public const PENDING = 'pending';
-    public const SUCCESS = 'success';
+	public const PRODUCTION = 'production';
 }
