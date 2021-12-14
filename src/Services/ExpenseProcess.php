@@ -54,11 +54,11 @@ class ExpenseProcess implements ExpenseContract
 
 	public function getCashWalletUrl()
 	{
-		$env = config(key: "app.env");
-		return match ($env) {
-			Enum::PRODUCTION => config('expense.cash.private_key.live'),
-			default => config('expense.cash.private_key.test')
-		};
+		$env = config("app.env");
+		if ($env !== Enum::PRODUCTION) {
+			return config('expense.cash.private_key.test');
+		}
+		return config('expense.cash.private_key.live');
 	}
 
 	/**
