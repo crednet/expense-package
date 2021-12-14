@@ -31,6 +31,8 @@ class ExpenseProcess implements ExpenseContract
 	 */
 	protected $walletType;
 
+	protected $cashWalletUrl;
+
 	protected $creditCardTransaction;
 
 	protected string $type;
@@ -47,6 +49,16 @@ class ExpenseProcess implements ExpenseContract
 				$this->credentials['amount'],
 				$this->credentials['account_id'] ?? null,
 			);
+		$this->cashWalletUrl = $this->getCashWalletUrl();
+	}
+
+	public function getCashWalletUrl()
+	{
+		$env = config(key: "app.env");
+		return match ($env) {
+			Enum::PRODUCTION => config('expense.cash.private_key.live'),
+			default => config('expense.cash.private_key.test')
+		};
 	}
 
 	/**
@@ -86,7 +98,7 @@ class ExpenseProcess implements ExpenseContract
 	 */
 	private function withdrawFromCash($requestBody): void
 	{
-		$walletUrl = config('expense.cash.base_url') . 'wallets';
+		$walletUrl = $this->cashWalletUrl . 'wallets';
 		$requestBody['wallet_id'] = $this->credentials['wallet_id'];
 		$requestBody['cbs_account_number'] = $this->credentials['wallet_account_number'] ?? null;
 
