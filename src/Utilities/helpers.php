@@ -64,7 +64,7 @@ if (!function_exists('processResponseWithException')) {
         if ($response->status() === Response::HTTP_UNPROCESSABLE_ENTITY) {
             ExpenseError::setErrors($response->json()['errors']);
         }
-        
+
         if ((isset($data['success']) && !$data['success']) || !$status) {
             // This will terminate the whole process and notify this user
             ExpenseError::abortIfUnsuccessfulResponse($data['message'], $response->status());
@@ -120,10 +120,17 @@ if (!function_exists('getPrivateKey')) {
      */
     function getPrivateKey(string $serviceType): string
     {
-        switch ($serviceType) {
-            case Enum::WALLET:
-                $key = config('expense.cash.private_key');
-                break;
+		$env = config('app.env');
+		switch ($serviceType) {
+			case Enum::WALLET:
+				switch ($env) {
+					case Enum::PRODUCTION:
+						$key = config('expense.cash.private_key.live');
+						break;
+					default:
+						$key = config('expense.cash.private_key.test');
+				}
+				break;
             case Enum::EXPENSE:
                 $key = config('expense.expense.private_key');
                 break;
