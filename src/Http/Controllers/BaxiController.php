@@ -165,7 +165,7 @@ class BaxiController extends Controller
 	 */
 	public function getMultichoiceBundles($provider): JsonResponse
 	{
-		$url = config('expense.expense.base_url') . "/baxi/multichoice-bundles-list/{$provider}";
+		$url = config('expense.expense.base_url') . "/bills/baxi/multichoice-bundles-list/{$provider}";
 		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
 		return $this->success($result);
 	}
@@ -202,7 +202,7 @@ class BaxiController extends Controller
 	 */
 	public function getElectricityBillers(): JsonResponse
 	{
-		$url = config('expense.expense.base_url') . '/baxi/electricity-billers';
+		$url = config('expense.expense.base_url') . '/bills/baxi/electricity-billers';
 		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
 		return $this->success($result);
 	}
