@@ -58,19 +58,6 @@ class BaxiService extends ExpenseProcess
 	 * @return array
 	 * @throws ExpenseException
 	 */
-	public function verifyAccountDetails(): array
-	{
-		$this->requestBody = [
-			'service_type' => $this->credentials['service_type'],
-			'account_number' => $this->credentials['account_number'],
-		];
-		return $this->initiateTransaction(ENUM::VERIFY_ACCOUNT, $this->requestBody, 'bills/baxi/verify-account-details');
-	}
-
-	/**
-	 * @return array
-	 * @throws ExpenseException
-	 */
 	public function getMultichoiceAddons(): array
 	{
 		$this->requestBody = [
