@@ -50,6 +50,12 @@ class BaxiService extends ExpenseProcess
 	 */
 	public function requestDatabundle(): array
 	{
+        DuplicateTransactionService::checkDuplicateTransaction(
+            Enum::DATABUNDLE,
+            $this->credentials['phone'],
+            $this->credentials->toArray()
+        );
+
 		$this->requestBody = [
 			'phone' => $this->credentials['phone'],
 			'service_type' => $this->credentials['service_type'],
@@ -67,6 +73,15 @@ class BaxiService extends ExpenseProcess
 	 */
 	public function multichoiceRequest(): array
 	{
+        $data = $this->credentials->toArray();
+        $data['amount'] = $this->credentials['total_amount'];
+
+        DuplicateTransactionService::checkDuplicateTransaction(
+            Enum::MULTICHOICE_SUBSCRIPTION,
+            $this->credentials['smartcard_number'],
+            $data
+        );
+
 		$this->requestBody = [
 			'smartcard_number' => $this->credentials['smartcard_number'],
 			'total_amount' => $this->credentials['total_amount'],
@@ -88,6 +103,12 @@ class BaxiService extends ExpenseProcess
 	 */
 	public function electricityRequest(): array
 	{
+        DuplicateTransactionService::checkDuplicateTransaction(
+            Enum::ELECTRICITY_REQUEST,
+            $this->credentials['account_number'],
+            $this->credentials->toArray()
+        );
+        
 		$this->requestBody = [
 			'service_type' => $this->credentials['service_type'],
 			'account_number' => $this->credentials['account_number'],
