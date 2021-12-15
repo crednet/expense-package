@@ -180,9 +180,12 @@ class BaxiController extends Controller
 	 */
 	public function getMultichoiceAddons(MultichoiceAddonRequest $request): JsonResponse
 	{
-		$credentials = collect($request);
-		$baxi = new BaxiService($credentials);
-		$result = $baxi->getMultichoiceAddons();
+		$this->requestBody = [
+			'service_type' => $request['service_type'],
+			'product_code' => $request['product_code'],
+		];
+		$url = config('expense.expense.base_url') . '/bills/baxi/multichoice/addons';
+		$result = sendRequestTo($url, $this->requestBody, getPrivateKey(Enum::EXPENSE));
 		return $this->success($result);
 	}
 
