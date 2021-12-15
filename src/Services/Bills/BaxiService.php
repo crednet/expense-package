@@ -65,32 +65,6 @@ class BaxiService extends ExpenseProcess
 	 * @return array
 	 * @throws ExpenseException
 	 */
-	public function verifyAccountDetails(): array
-	{
-		$this->requestBody = [
-			'service_type' => $this->credentials['service_type'],
-			'account_number' => $this->credentials['account_number'],
-		];
-		return $this->initiateTransaction(ENUM::VERIFY_ACCOUNT, $this->requestBody, 'bills/baxi/verify-account-details');
-	}
-
-	/**
-	 * @return array
-	 * @throws ExpenseException
-	 */
-	public function getMultichoiceAddons(): array
-	{
-		$this->requestBody = [
-			'service_type' => $this->credentials['service_type'],
-			'product_code' => $this->credentials['product_code'],
-		];
-		return $this->initiateTransaction(ENUM::MULTICHOICE_ADDON, $this->requestBody, 'bills/baxi/multichoice/addons');
-	}
-
-	/**
-	 * @return array
-	 * @throws ExpenseException
-	 */
 	public function multichoiceRequest(): array
 	{
 		$this->requestBody = [
@@ -106,19 +80,6 @@ class BaxiService extends ExpenseProcess
 		$response = $this->initiateTransaction(ENUM::MULTICHOICE_SUBSCRIPTION, $this->requestBody, 'bills/baxi/multichoice-request');
 		$this->updateBillsTransactions($response);
 		return $response;
-	}
-
-	/**
-	 * @return array
-	 * @throws ExpenseException
-	 */
-	public function verifyElectricityUser(): array
-	{
-		$this->requestBody = [
-			'service_type' => $this->credentials['service_type'],
-			'account_number' => $this->credentials['account_number'],
-		];
-		return $this->initiateTransaction(ENUM::VERIFY_ELECTRICITY, $this->requestBody, 'bills/baxi/verify-electricity-user');
 	}
 
 	/**

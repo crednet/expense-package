@@ -141,9 +141,12 @@ class BaxiController extends Controller
 	 */
 	public function verifyAccountDetails(VerifyAccountDetailsRequest $request): JsonResponse
 	{
-		$credentials = collect($request);
-		$baxi = new BaxiService($credentials);
-		$result = $baxi->verifyAccountDetails();
+		$this->requestBody = [
+			'service_type' => $request['service_type'],
+			'account_number' => $request['account_number'],
+		];
+		$url = config('expense.expense.base_url') . '/bills/baxi/verify-account-details';
+		$result = sendRequestTo($url, $this->requestBody, getPrivateKey(Enum::EXPENSE));
 		return $this->success($result);
 	}
 
@@ -165,7 +168,7 @@ class BaxiController extends Controller
 	 */
 	public function getMultichoiceBundles($provider): JsonResponse
 	{
-		$url = config('expense.expense.base_url') . "/baxi/multichoice-bundles-list/{$provider}";
+		$url = config('expense.expense.base_url') . "/bills/baxi/multichoice-bundles-list/{$provider}";
 		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
 		return $this->success($result);
 	}
@@ -177,9 +180,12 @@ class BaxiController extends Controller
 	 */
 	public function getMultichoiceAddons(MultichoiceAddonRequest $request): JsonResponse
 	{
-		$credentials = collect($request);
-		$baxi = new BaxiService($credentials);
-		$result = $baxi->getMultichoiceAddons();
+		$this->requestBody = [
+			'service_type' => $request['service_type'],
+			'product_code' => $request['product_code'],
+		];
+		$url = config('expense.expense.base_url') . '/bills/baxi/multichoice/addons';
+		$result = sendRequestTo($url, $this->requestBody, getPrivateKey(Enum::EXPENSE));
 		return $this->success($result);
 	}
 
@@ -202,7 +208,7 @@ class BaxiController extends Controller
 	 */
 	public function getElectricityBillers(): JsonResponse
 	{
-		$url = config('expense.expense.base_url') . '/baxi/electricity-billers';
+		$url = config('expense.expense.base_url') . '/bills/baxi/electricity-billers';
 		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
 		return $this->success($result);
 	}
@@ -214,9 +220,12 @@ class BaxiController extends Controller
 	 */
 	public function verifyElectricityUser(VerifyElectricityUserRequest $request): JsonResponse
 	{
-		$credentials = collect($request);
-		$baxi = new BaxiService($credentials);
-		$result = $baxi->verifyElectricityUser();
+		$this->requestBody = [
+			'service_type' => $request['service_type'],
+			'account_number' => $request['account_number'],
+		];
+		$url = config('expense.expense.base_url') . '/bills/baxi/verify-electricity-user';
+		$result = sendRequestTo($url, $this->requestBody, getPrivateKey(Enum::EXPENSE));
 		return $this->success($result);
 	}
 
