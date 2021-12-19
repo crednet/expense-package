@@ -9,6 +9,7 @@ use Credpal\Expense\Http\Requests\Trips\FlightReservationRequest;
 use Credpal\Expense\Http\Requests\Trips\FlightRulesRequest;
 use Credpal\Expense\Http\Requests\Trips\SearchRequest;
 use Credpal\Expense\Services\TripsService;
+use Credpal\Expense\Http\Controllers\Controller;
 
 class TripsController extends Controller
 {
