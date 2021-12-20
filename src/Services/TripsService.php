@@ -22,29 +22,6 @@ class TripsService extends ExpenseProcess
     public const FLIGHT_LOCAL = 'local';
     public const FLIGHT_INTERNATIONAL = 'international';
 
-    public function search()
-    {
-        $requestBody = $this->credentials;
-
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/trips/search', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
-    }
-    
-    public function confirmTicketPrice()
-    {
-        $requestBody = $this->credentials;
-
-        $expenseResponse = sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/trips/confirm-ticket-price', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
-
-        return $expenseResponse;
-    }
-    
-    public function cancel()
-    {
-        $requestBody = $this->credentials;
-
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/trips/cancel-ticket', $requestBody->toArray(), getPrivateKey(Enum::EXPENSE));
-    }
-
     public function bookTicket()
     {
         $this->credentials['description'] = "Trips - " . $this->credentials['flight_type'];
@@ -60,16 +37,6 @@ class TripsService extends ExpenseProcess
         return $bookTicket;
     }
     
-    public function flightRules()
-    {
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/flight-rules', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
-    }
-
-    public function myReservation()
-    {
-        return sendRequestAndThrowExceptionOnFailure(config('expense.expense.base_url') . '/my-reservation', $this->credentials->toArray(), getPrivateKey(Enum::EXPENSE));
-    }
-
     /**
      * @param int $userId
      * @param int $accountId
@@ -174,5 +141,15 @@ class TripsService extends ExpenseProcess
             $traveller->traveller_reference_id = $air_traveller["traveller_reference_id"];
             $traveller->save();
         }
+    }
+
+    public static function resultData($flightyType, $data)
+    {
+        if ($flightyType == self::FLIGHT_LOCAL) {
+            $data['data'] = $data['data'][0];
+            return $data;
+        }
+
+        return $data;
     }
 }

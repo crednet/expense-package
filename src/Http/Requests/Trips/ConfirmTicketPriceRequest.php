@@ -64,15 +64,6 @@ class ConfirmTicketPriceRequest extends FormRequest
             'air_travellers.*.documents.*.issue_country_code' => ['size:3'],
             'air_travellers.*.documents.*.effective_date' => ['date'],
             'air_travellers.*.documents.*.inner_doc_type' => ['nullable', 'in:visa,passport'],
-            'billing_address' => 'required|array',
-            'billing_address.*' => [
-                'contact_name' => 'required',
-                'address_line_1' => 'required',
-                'city' => 'required',
-                'country_code' => 'required',
-                'contact_mobile_no' => 'required',
-                'contact_email' => ['required', 'email']
-            ]
         ];
     }
 }
