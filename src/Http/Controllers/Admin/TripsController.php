@@ -2,7 +2,7 @@
 
 namespace Credpal\Expense\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use Credpal\Expense\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Credpal\Expense\Models\Trips;
 

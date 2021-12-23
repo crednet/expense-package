@@ -18,6 +18,8 @@ use Illuminate\Http\Response;
 
 class BaxiController extends Controller
 {
+	protected array $requestBody;
+
 	/**
 	 * @return JsonResponse
 	 * @throws ExpenseException
@@ -63,11 +65,11 @@ class BaxiController extends Controller
 	}
 
 	/**
-	 * @param $category
+	 * @param string $category
 	 * @return JsonResponse
 	 * @throws ExpenseException
 	 */
-	public function getBillerByCategory($category): JsonResponse
+	public function getBillerByCategory(string $category): JsonResponse
 	{
 		$url = config('expense.expense.base_url') . "/bills/baxi/biller-by-category/{$category}";
 		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
@@ -110,11 +112,11 @@ class BaxiController extends Controller
 	}
 
 	/**
-	 * @param $provider
+	 * @param string $provider
 	 * @return JsonResponse
 	 * @throws ExpenseException
 	 */
-	public function getBundleByProvider($provider): JsonResponse
+	public function getBundleByProvider(string $provider): JsonResponse
 	{
 		$url = config('expense.expense.base_url') . "/bills/baxi/provider-bundles/{$provider}";
 		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
@@ -162,11 +164,11 @@ class BaxiController extends Controller
 	}
 
 	/**
-	 * @param $provider
+	 * @param string $provider
 	 * @return JsonResponse
 	 * @throws ExpenseException
 	 */
-	public function getMultichoiceBundles($provider): JsonResponse
+	public function getMultichoiceBundles(string $provider): JsonResponse
 	{
 		$url = config('expense.expense.base_url') . "/bills/baxi/multichoice-bundles-list/{$provider}";
 		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
