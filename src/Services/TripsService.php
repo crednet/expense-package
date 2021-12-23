@@ -16,7 +16,7 @@ class TripsService extends ExpenseProcess
         "CHD",
         "INF"
     ];
-    
+
     public const TYPE_FLIGHT = "flight";
 
     public const FLIGHT_LOCAL = 'local';
@@ -33,22 +33,12 @@ class TripsService extends ExpenseProcess
         if ($bookTicket['status']){
             $this->updateTripsRequestLog($bookTicket['data'], Enum::SUCCESS);
         }
-        
+
         return $bookTicket;
     }
-    
+
     /**
-     * @param int $userId
-     * @param int $accountId
-     * @param string $userType
-     * @param int $amount
-     * @param string $reference
-     * @param string $sessionId
-     * @param string $type
-     * @param string $status
-     * @param string $paymentMethod
-     * @param string|null $recipientNumber
-     * @param null $data
+     * @param array $data
      */
     public function logTripsRequest(array $data) : Trips
     {

@@ -25,34 +25,29 @@ class Trips extends Model
     }
 
     /**
-     * @param int $clientId
-     * @param int $bvn
+     * @param int $userId
+     * @param int $accountId
+     * @param string $userType
      * @param int $amount
-     * @param string $serviceProvider
      * @param string $reference
+     * @param string $sessionId
      * @param string $type
      * @param string $status
-     * @param string $url
+     * @param string $paymentMethod
      * @param string|null $recipientNumber
-     * @param string|null $description
-     * @param string|null $transactionReference
-     * @param null $data
+     * @param array|null $requestData
      */
     public static function transactionLogger(
         int $userId,
         int $accountId,
         string $userType,
         int $amount,
-//        string $serviceProvider,
         string $reference,
         string $sessionId,
         string $type,
         string $status,
-//        string $url,
         string $paymentMethod,
         string $recipientNumber = null,
-//        string $description = null,
-//        string $transactionReference = null,
         array $requestData = null
     ) {
 
@@ -62,24 +57,17 @@ class Trips extends Model
                 'account_id' => $accountId,
                 'user_type' => $userType,
                 'amount' => $amount,
-
-//                'service_provider' => $serviceProvider,
                 'reference' => $reference,
                 'session_id' => $sessionId,
                 'type' => $type,
                 'status' => $status,
-//                'url' => $url,
                 'payment_method' => $paymentMethod,
                 'recipient_number' => $recipientNumber,
-//                'action' => ($status === ENUM::PENDING) ? ENUM::RETRY : ENUM::SKIP,
-//                'description' => $description,
-//                'transaction_reference' => $transactionReference,
-                'request_data' => json_encode($requestData),
-//                'data' => $data,
+                'request_data' => json_encode($requestData)
             ]
         );
     }
-    
+
     public function tripsTravellers()
     {
         return $this->hasMany(TripsTravellers::class, "trip_id");
