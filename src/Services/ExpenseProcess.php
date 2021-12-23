@@ -220,7 +220,8 @@ class ExpenseProcess implements ExpenseContract
 				$this->credentials['amount'],
 				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type,
 				$this->type,
-				$this->credentials['wallet_id']
+				$this->credentials['wallet_id'],
+				$this->expenseResponse
 			);
 		} elseif($this->walletType === Enum::CREDIT) {
 			$this->creditCardTransaction->logTransactions(
