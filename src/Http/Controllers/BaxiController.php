@@ -164,11 +164,11 @@ class BaxiController extends Controller
 	}
 
 	/**
-	 * @param $provider
+	 * @param string $provider
 	 * @return JsonResponse
 	 * @throws ExpenseException
 	 */
-	public function getMultichoiceBundles($provider): JsonResponse
+	public function getMultichoiceBundles(string $provider): JsonResponse
 	{
 		$url = config('expense.expense.base_url') . "/bills/baxi/multichoice-bundles-list/{$provider}";
 		$result = sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
