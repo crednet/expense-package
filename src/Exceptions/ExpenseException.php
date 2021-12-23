@@ -4,13 +4,10 @@ namespace Credpal\Expense\Exceptions;
 
 use Credpal\Expense\Traits\ExpenseError;
 use Exception;
-use App\Traits\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExpenseException extends Exception
 {
-    use JsonResponse;
-    
     public function render()
     {
         $response = [
