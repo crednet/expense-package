@@ -2,7 +2,6 @@
 
 namespace Credpal\Expense\Http\Controllers;
 
-use App\Configuration;
 use Credpal\Expense\Http\Requests\Trips\BookTicketRequest;
 use Credpal\Expense\Http\Requests\Trips\CancelRequest;
 use Credpal\Expense\Http\Requests\Trips\ConfirmTicketPriceRequest;
@@ -21,8 +20,9 @@ class TripsController extends Controller
             $request->validated(),
             getPrivateKey(Enum::EXPENSE)
         );
+        $configurationModel = config('expense.configuration_model');
 
-        $searchResult['data']['mark_up_percentage'] = Configuration::value('trips_mark_up_percentage');
+        $searchResult['data']['mark_up_percentage'] = $configurationModel::value('trips_mark_up_percentage');
         
         return $this->success($searchResult['data']);
     }
@@ -49,7 +49,9 @@ class TripsController extends Controller
         );
 
         $confirmTicketResponse = TripsService::resultData($request->flight_type, $confirmTicketResponse);
-        $confirmTicketResponse['data']['mark_up_percentage'] = Configuration::value('trips_mark_up_percentage');
+        $configurationModel = config('expense.configuration_model');
+
+        $confirmTicketResponse['data']['mark_up_percentage'] = $configurationModel::value('trips_mark_up_percentage');
 
         return $this->success($confirmTicketResponse['data']);
     }
