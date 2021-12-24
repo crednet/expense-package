@@ -2,8 +2,6 @@
 
 namespace Credpal\Expense\Services;
 
-use App\Configuration;
-use App\Models\Transfer\Transfer;
 use Carbon\Carbon;
 use Credpal\Expense\Exceptions\ExpenseException;
 use Credpal\Expense\Utilities\Enum;
@@ -15,7 +13,9 @@ class DuplicateTransactionService
     {
         $paymentMethod = $data['wallet_type'] === ENUM::CREDIT ? 'credpal_card' : 'credpal_cash';
 
-        $duplicateTransactionCheckInterval = Configuration::value('duplicate_transaction_check_interval');
+        $configurationModel = config('expense.configuration_model');
+
+        $duplicateTransactionCheckInterval = $configurationModel::value('duplicate_transaction_check_interval');
 
         $billsTransaction = config('expense.bill_transactions_model')::where('type', $transactionType)
             ->where('user_id', auth()->user()->id)
@@ -37,9 +37,11 @@ class DuplicateTransactionService
 
     public static function checkDuplicateTransfer($accountId, $amount, $data)
     {
-        $duplicateTransactionCheckInterval = Configuration::value('duplicate_transaction_check_interval');
+        $configurationModel = config('expense.configuration_model');
+        $duplicateTransactionCheckInterval = $configurationModel::value('duplicate_transaction_check_interval');
+        $transferModel = config('expense.trasnfer_model');
 
-        $transfer = Transfer::where('user_id', auth()->user()->id)
+        $transfer = $transferModel::where('user_id', auth()->user()->id)
             ->where('account_id', $accountId)
             ->where('amount', $amount)
             ->where('user_type', $data['user_type'])

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use App\Exports\DatatableExport;
-use Excel;
+use Credpal\Expense\Exports\DatatableExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Datatable
 {

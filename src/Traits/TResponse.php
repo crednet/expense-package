@@ -90,7 +90,7 @@ trait TResponse
         Builder $query,
         array $config = [],
         $resourceClass = null
-    ): JsonResponse
+    )
     {
         $data = Datatable::make($query, $config, $resourceClass);
 
@@ -104,6 +104,6 @@ trait TResponse
             'datatable' => $data,
         ];
 
-        return $this->success($response, Response::HTTP_OK);
+        return $this->success($response);
     }
 }

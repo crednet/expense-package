@@ -34,5 +34,9 @@
         "phpstan": "./vendor/bin/phpstan analyse --memory-limit=3G",
         "test": "./vendor/bin/phpunit",
         "test-filter": "./vendor/bin/phpunit --filter"
+    },
+    "require": {
+        "illuminate/auth": "^8.77",
+        "maatwebsite/excel": "^3.1"
     }
 }

@@ -43,6 +43,7 @@ class TripsService extends ExpenseProcess
     public function logTripsRequest(array $data) : Trips
     {
         try {
+            $configurationModel = config('expense.configuration_model');
             DB::beginTransaction();
 
             $trips = Trips::create(
@@ -53,7 +54,7 @@ class TripsService extends ExpenseProcess
                     'wallet_type' => $data["wallet_type"],
                     'user_type' => "personal",//$data['user_type'],
                     'amount' => $data['amount'],
-                    'mark_up_percentage' => Configuration::value('trips_mark_up_percentage', 0),
+                    'mark_up_percentage' => $configurationModel::value('trips_mark_up_percentage', 0),
                     'reference' => $this->reference,
                     'session_id' => $data['session_id'],
                     'type' => $data['type'] . '-' . $data['flight_type'],
@@ -127,8 +128,8 @@ class TripsService extends ExpenseProcess
                 ->where('dob', substr($air_traveller["birth_date"], 0, 10))
                 ->first();
 
-            $traveller->e_ticket_number = $air_traveller["e_ticket_number"];
-            $traveller->traveller_reference_id = $air_traveller["traveller_reference_id"];
+            $traveller['e_ticket_number'] = $air_traveller["e_ticket_number"];
+            $traveller['traveller_reference_id'] = $air_traveller["traveller_reference_id"];
             $traveller->save();
         }
     }

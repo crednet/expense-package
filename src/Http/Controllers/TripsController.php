@@ -10,6 +10,7 @@ use Credpal\Expense\Http\Requests\Trips\FlightRulesRequest;
 use Credpal\Expense\Http\Requests\Trips\SearchRequest;
 use Credpal\Expense\Services\TripsService;
 use Credpal\Expense\Utilities\Enum;
+use Illuminate\Support\Facades\Auth;
 
 class TripsController extends Controller
 {
@@ -31,15 +32,15 @@ class TripsController extends Controller
     {
         $requestBody = $request->validated();
 
-        $user = auth()->user();
+        $user = Auth::user();
 
         $requestBody['billing_address'] = [
-            'contact_name' => $user->name . ' ' . $user->last_name,
-            'address_line_1' => $user->profile->address,
-            'city' => $user->profile->lga,
+            'contact_name' => $user['name'] . ' ' . $user['last_name'],
+            'address_line_1' => $user['profile']['address'],
+            'city' => $user['profile']['lga'],
             'country_code' => 'NG',
-            'contact_mobile_no' => $user->phone_no,
-            'contact_email' => $user->email,
+            'contact_mobile_no' => $user['phone_no'],
+            'contact_email' => $user['email'],
         ];
 
         $confirmTicketResponse = sendRequestAndThrowExceptionOnFailure(
@@ -74,12 +75,12 @@ class TripsController extends Controller
         $user = auth()->user();
 
         $requestBody['billing_address'] = [
-            'contact_name' => $user->name . ' ' . $user->last_name,
-            'address_line_1' => $user->profile->address,
-            'city' => $user->profile->lga,
+            'contact_name' => $user['name'] . ' ' . $user['last_name'],
+            'address_line_1' => $user['profile']['address'],
+            'city' => $user['profile']['lga'],
             'country_code' => 'NG',
-            'contact_mobile_no' => $user->phone_no,
-            'contact_email' => $user->email,
+            'contact_mobile_no' => $user['phone_no'],
+            'contact_email' => $user['email'],
         ];
 
         $tripsService = new TripsService(collect($requestBody));
