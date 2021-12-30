@@ -36,7 +36,8 @@
         "test-filter": "./vendor/bin/phpunit --filter"
     },
     "require": {
-        "illuminate/auth": "^8.77",
+        "php": "^7.4|^8.0",
+        "illuminate/auth": "^7.0|^8.0",
         "maatwebsite/excel": "^3.1"
     }
 }

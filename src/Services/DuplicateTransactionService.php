@@ -39,7 +39,7 @@ class DuplicateTransactionService
     {
         $configurationModel = config('expense.configuration_model');
         $duplicateTransactionCheckInterval = $configurationModel::value('duplicate_transaction_check_interval');
-        $transferModel = config('expense.trasnfer_model');
+        $transferModel = config('expense.transfer_model');
 
         $transfer = $transferModel::where('user_id', auth()->user()->id)
             ->where('account_id', $accountId)
