@@ -28,7 +28,7 @@ class MutltichoiceBundleRequest extends FormRequest
         return [
 			'user_id' => 'required|exists:users,id',
             'smartcard_number' => 'required|string|regex:/[0-9]/',
-            'total_amount' => 'required|numeric',
+            'amount' => 'required|numeric',
             'product_code' => 'required|string',
             'product_monthsPaidFor' => 'required|numeric',
             'addon_code' => 'nullable|string',
