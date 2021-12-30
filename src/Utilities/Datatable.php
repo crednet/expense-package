@@ -46,7 +46,7 @@ class Datatable
 
     private $rangeEnd;
 
-    private $exportType = null;
+//    private $exportType = null;
 
     private $exportHeaders = null;
 
@@ -103,6 +103,7 @@ class Datatable
             }
         }
 
+        /*
         if (request()->exportType) {
             $this->exportType = request()->exportType;
 
@@ -114,6 +115,7 @@ class Datatable
                 $this->exportMapping = $config['exportMapping'];
             }
         }
+        */
     }
 
     public static function make($query, array $config = [], $resourceClass = null)
@@ -136,12 +138,14 @@ class Datatable
 
         $totalCount = $datatable->countTotal();
 
+        /*
         switch ($datatable->exportType) {
             case 'with-filters':
                 return $datatable->exportWithFilters($datatable->getDataWithoutLimit());
             case 'all':
                 return $datatable->exportPlain($datatable->getDataWithoutLimitAndWithSort());
         }
+        */
 
         $chunk = $datatable->getData();
 
@@ -372,6 +376,7 @@ class Datatable
         };
     }
 
+    /*
     public function exportWithFilters($data)
     {
         return Excel::download(new DatatableExport(
@@ -389,4 +394,5 @@ class Datatable
             $this->getExportMapping($data)
         ), 'export-' . date('Y-m-d') . '.xlsx');
     }
+    */
 }
