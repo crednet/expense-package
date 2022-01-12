@@ -2,9 +2,11 @@
 
 return [
 	'bvn_model' => '\App\UserProfile',
+	'email_model' => '\App\User',
 	'bill_transactions_model' => '\App\BillTransaction',
 	'credit_card_transaction' => '\App\Services\V2\CreditCard\CreditCardTransactionService',
 	'bvn_column' => 'bvn',
+	'email_column' => 'bvn',
 
 	'cash' => [
 		'base_url' => env('CPCASH_BASEURL'),

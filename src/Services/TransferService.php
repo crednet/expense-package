@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Http;
 class TransferService extends ExpenseProcess
 {
     protected Collection $credentials;
-    protected array $requestBody;
 
     public function __construct($credentials)
     {
@@ -27,12 +26,12 @@ class TransferService extends ExpenseProcess
      */
     public function makeTransfer(): array
     {
-        $this->requestBody = [
+        $this->expenseRequestBody = [
             'account_name' => $this->credentials['account_name'],
             'account_number' => $this->credentials['account_number'],
             'bank_code' => $this->credentials['bank_code'],
         ];
 
-        return $this->initiateTransaction(ENUM::TRANSFER, $this->requestBody, 'transfers');
+        return $this->initiateTransaction(ENUM::TRANSFER, 'transfers');
     }
 }
