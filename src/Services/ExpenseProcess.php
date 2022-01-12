@@ -168,8 +168,6 @@ class ExpenseProcess implements ExpenseContract
 	}
 
 	/**
-	 * @param $status
-	 * @param $reference
 	 * @throws ExpenseException
 	 */
 	private function reverseCash($status, $reference): void
