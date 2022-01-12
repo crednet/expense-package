@@ -76,9 +76,8 @@ class ExpenseProcess implements ExpenseContract
 		return $this;
 	}
 
+
 	/**
-	 * @param $requestBody
-	 * @return void
 	 * @throws ExpenseException
 	 */
 	private function withdrawFromCash($requestBody): void
