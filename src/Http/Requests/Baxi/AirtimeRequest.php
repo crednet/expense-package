@@ -25,7 +25,6 @@ class AirtimeRequest extends FormRequest
      */
     public function rules(): array
     {
-        
         return [
 			'user_id' => 'required|exists:users,id',
             'phone' => 'required|string|regex:/[0-9]/',

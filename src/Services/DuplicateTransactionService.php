@@ -11,7 +11,7 @@ class DuplicateTransactionService
 {
     public static function checkDuplicateTransaction($transactionType, $recipientNumber, $data)
     {
-        $paymentMethod = $data['wallet_type'] === ENUM::CREDIT ? 'credpal_card' : 'credpal_cash';
+        $paymentMethod = $data['wallet_type'] === Enum::CREDIT ? Enum::WALLET_TYPE_CREDIT : Enum::WALLET_TYPE_CASH;
 
         $configurationModel = config('expense.configuration_model');
 
@@ -44,7 +44,6 @@ class DuplicateTransactionService
         $transfer = $transferModel::where('user_id', auth()->user()->id)
             ->where('account_id', $accountId)
             ->where('amount', $amount)
-            ->where('user_type', $data['user_type'])
             ->where(function ($query) {
                 $query->where('status', 'pending')
                     ->orWhere('status', 'success');
@@ -53,7 +52,10 @@ class DuplicateTransactionService
             ->first();
 
         if ($transfer) {
-            throw new ExpenseException("A transfer with similar detail exist. Please try again in few minutes", Response::HTTP_PRECONDITION_FAILED);
+            throw new ExpenseException(
+                "A transfer with similar detail exist. Please try again in few minutes",
+                Response::HTTP_PRECONDITION_FAILED
+            );
         }
     }
 }
