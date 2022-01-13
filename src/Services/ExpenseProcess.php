@@ -109,7 +109,7 @@ class ExpenseProcess implements ExpenseContract
 
 		$this->expenseRequestBody['amount'] = $this->credentials['amount'] ?? $this->walletResponse['data']['transaction']['amount'];
 		$this->expenseRequestBody['description'] = $this->credentials['description'] ?? $this->walletResponse['data']['transaction']['description'] ?? $type;
-		$this->expenseRequestBody['reference'] = $this->reference ?? $this->walletResponse['data']['transaction']['reference'];
+		$this->expenseRequestBody['reference'] =  $this->walletResponse['data']['transaction']['reference'] ?? $this->reference;
 
 		$this->expenseResponse = sendRequestTo($transactionUrl, $this->expenseRequestBody, getPrivateKey(Enum::EXPENSE));
 
