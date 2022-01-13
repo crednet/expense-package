@@ -37,7 +37,8 @@ class TransferController extends Controller
     {
         $data = $request->only([
             'user_id',
-            'wallet_id',
+			'wallet_id',
+			'account_id',
             'wallet_type',
             'amount',
             'cbs_account_number',

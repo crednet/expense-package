@@ -11,8 +11,6 @@ use Illuminate\Support\Collection;
 
 class BaxiService extends ExpenseProcess
 {
-	protected Collection $credentials;
-	protected array $requestBody;
 	protected $billsTransaction;
 
 	public function __construct($credentials)
@@ -27,19 +25,19 @@ class BaxiService extends ExpenseProcess
 	 */
 	public function requestAirtime(): array
 	{
-        DuplicateTransactionService::checkDuplicateTransaction(
-            Enum::AIRTIME,
-            $this->credentials['phone'],
-            $this->credentials->toArray()
-        );
-        
-		$this->requestBody = [
+		DuplicateTransactionService::checkDuplicateTransaction(
+			Enum::AIRTIME,
+			$this->credentials['phone'],
+			$this->credentials->toArray()
+		);
+
+		$this->expenseRequestBody = [
 			'phone' => $this->credentials['phone'],
 			'service_type' => $this->credentials['service_type'],
 			'plan' => $this->credentials['plan'],
 		];
 		$this->logBillsTransactions(ENUM::AIRTIME, $this->credentials['phone']);
-		$response = $this->initiateTransaction(ENUM::AIRTIME, $this->requestBody, 'bills/baxi/airtime-request');
+		$response = $this->initiateTransaction(ENUM::AIRTIME, 'bills/baxi/airtime-request');
 		$this->updateBillsTransactions($response);
 		return $response;
 	}
@@ -50,19 +48,19 @@ class BaxiService extends ExpenseProcess
 	 */
 	public function requestDatabundle(): array
 	{
-        DuplicateTransactionService::checkDuplicateTransaction(
-            Enum::DATABUNDLE,
-            $this->credentials['phone'],
-            $this->credentials->toArray()
-        );
+		DuplicateTransactionService::checkDuplicateTransaction(
+			Enum::DATABUNDLE,
+			$this->credentials['phone'],
+			$this->credentials->toArray()
+		);
 
-		$this->requestBody = [
+		$this->expenseRequestBody = [
 			'phone' => $this->credentials['phone'],
 			'service_type' => $this->credentials['service_type'],
 			'datacode' => $this->credentials['datacode'],
 		];
 		$this->logBillsTransactions(ENUM::DATABUNDLE, $this->credentials['phone']);
-		$response = $this->initiateTransaction(ENUM::DATABUNDLE, $this->requestBody, 'bills/baxi/databundle-request');
+		$response = $this->initiateTransaction(ENUM::DATABUNDLE, 'bills/baxi/databundle-request');
 		$this->updateBillsTransactions($response);
 		return $response;
 	}
@@ -73,16 +71,16 @@ class BaxiService extends ExpenseProcess
 	 */
 	public function multichoiceRequest(): array
 	{
-        $data = $this->credentials->toArray();
-        $data['amount'] = $this->credentials['total_amount'];
+		$data = $this->credentials->toArray();
+		$data['amount'] = $this->credentials['amount'];
 
-        DuplicateTransactionService::checkDuplicateTransaction(
-            Enum::MULTICHOICE_SUBSCRIPTION,
-            $this->credentials['smartcard_number'],
-            $data
-        );
+		DuplicateTransactionService::checkDuplicateTransaction(
+			Enum::MULTICHOICE_SUBSCRIPTION,
+			$this->credentials['smartcard_number'],
+			$data
+		);
 
-		$this->requestBody = [
+		$this->expenseRequestBody = [
 			'smartcard_number' => $this->credentials['smartcard_number'],
 			'total_amount' => $this->credentials['total_amount'],
 			'product_code' => $this->credentials['product_code'],
@@ -92,7 +90,7 @@ class BaxiService extends ExpenseProcess
 			'service_type' => $this->credentials['service_type'],
 		];
 		$this->logBillsTransactions(ENUM::MULTICHOICE_SUBSCRIPTION, $this->credentials['smartcard_number']);
-		$response = $this->initiateTransaction(ENUM::MULTICHOICE_SUBSCRIPTION, $this->requestBody, 'bills/baxi/multichoice-request');
+		$response = $this->initiateTransaction(ENUM::MULTICHOICE_SUBSCRIPTION, 'bills/baxi/multichoice-request');
 		$this->updateBillsTransactions($response);
 		return $response;
 	}
@@ -103,19 +101,19 @@ class BaxiService extends ExpenseProcess
 	 */
 	public function electricityRequest(): array
 	{
-        DuplicateTransactionService::checkDuplicateTransaction(
-            Enum::ELECTRICITY_REQUEST,
-            $this->credentials['account_number'],
-            $this->credentials->toArray()
-        );
-        
-		$this->requestBody = [
+		DuplicateTransactionService::checkDuplicateTransaction(
+			Enum::ELECTRICITY_REQUEST,
+			$this->credentials['account_number'],
+			$this->credentials->toArray()
+		);
+
+		$this->expenseRequestBody = [
 			'service_type' => $this->credentials['service_type'],
 			'account_number' => $this->credentials['account_number'],
 			'phone' => $this->credentials['phone'],
 		];
 		$this->logBillsTransactions(ENUM::ELECTRICITY_REQUEST, $this->credentials['account_number']);
-		$response = $this->initiateTransaction(ENUM::ELECTRICITY_REQUEST, $this->requestBody, 'bills/baxi/electricity-request');
+		$response = $this->initiateTransaction(ENUM::ELECTRICITY_REQUEST, 'bills/baxi/electricity-request');
 		$this->updateBillsTransactions($response);
 		return $response;
 	}

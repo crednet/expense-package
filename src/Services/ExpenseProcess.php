@@ -31,6 +31,8 @@ class ExpenseProcess implements ExpenseContract
 	 */
 	protected $walletType;
 
+	protected array $expenseRequestBody;
+
 	protected $creditCardTransaction;
 
 	protected string $type;
@@ -56,11 +58,6 @@ class ExpenseProcess implements ExpenseContract
 	 */
 	private function withdrawAmount(string $type): ExpenseProcess
 	{
-		/*
-		$walletUrl = ($this->walletType === Enum::DEBIT) ?
-			config('expense.cash.base_url'). 'wallets' :
-			config('expense.credit_wallet_url');
-		*/
 		$requestBody = [
 			'category' => $type,
 			'amount' => $this->credentials['amount'],
@@ -80,8 +77,6 @@ class ExpenseProcess implements ExpenseContract
 	}
 
 	/**
-	 * array @param $requestBody
-	 * @return void
 	 * @throws ExpenseException
 	 */
 	private function withdrawFromCash(array $requestBody): void
@@ -106,30 +101,37 @@ class ExpenseProcess implements ExpenseContract
 	/**
 	 * @throws ExpenseException
 	 */
-	private function processTransaction(string $type, array $requestBody, string $urlPath): ExpenseProcess
+	private function processTransaction(string $type, string $urlPath): ExpenseProcess
 	{
-		/*
-		$transactionUrl = ($type === ENUM::TRANSFER) ?
-			config('expense.transfer_url') :
-			config('expense.bills_url') . $url;
-		*/
 		$transactionUrl = config('expense.expense.base_url') . '/' . $urlPath;
 
+		$this->accessUserBvnAndEmail();
+
+		$this->expenseRequestBody['amount'] = $this->credentials['amount'] ?? $this->walletResponse['data']['transaction']['amount'];
+		$this->expenseRequestBody['description'] = $this->credentials['description'] ?? $this->walletResponse['data']['transaction']['description'] ?? $type;
+		$this->expenseRequestBody['reference'] = $this->reference ?? $this->walletResponse['data']['transaction']['reference'];
+
+		$this->expenseResponse = sendRequestTo($transactionUrl, $this->expenseRequestBody, getPrivateKey(Enum::EXPENSE));
+
+		return $this;
+	}
+
+	private function accessUserBvnAndEmail()
+	{
 		$bvnModel = config('expense.bvn_model');
 		$bvnColumn = config('expense.bvn_column');
+		$emailModel = config('expense.email_model');
+		$emailColumn = config('expense.email_column');
 		$bvnInstance = new $bvnModel();
-		$requestBody['bvn'] = $bvnInstance->query()
+		$emailInstance = new $emailModel();
+		$this->expenseRequestBody['bvn'] = $bvnInstance->query()
 			->whereUserId($this->credentials['user_id'])
 			->firstOrFail()
 			->{$bvnColumn};
-
-		$requestBody['amount'] = $this->credentials['amount'] ?? $this->walletResponse['data']['transaction']['amount'];
-		$requestBody['description'] = $this->credentials['description'] ?? $this->walletResponse['data']['transaction']['description'] ?? $type;
-		$requestBody['reference'] = $this->reference ?? $this->walletResponse['data']['transaction']['reference'];
-
-		$this->expenseResponse = sendRequestTo($transactionUrl, $requestBody, getPrivateKey(Enum::EXPENSE));
-
-		return $this;
+		$this->expenseRequestBody['email'] = $emailInstance->query()
+			->whereId($this->credentials['user_id'])
+			->firstOrFail()
+			->{$emailColumn};
 	}
 
 	/**
@@ -154,24 +156,16 @@ class ExpenseProcess implements ExpenseContract
 
 		if (!$status) {
 			// update to reverse wallet if the transfer failed
-			/*
-			$walletUpdateUrl = ($this->walletType === Enum::DEBIT) ?
-				config('expense.cash.base_url') . 'wallets/' . $this->credentials['wallet_id'] :
-				config('expense.credit_wallet_finalize_url');
-			*/
 
 			if ($this->walletType === Enum::DEBIT) {
 				$this->reverseCash($status, $reference);
 			} elseif($this->walletType === Enum::CREDIT) {
 				$this->reverseCredit($status, $reference);
 			}
-
 		}
 	}
 
 	/**
-	 * bool @param $status
-	 * string @param $reference
 	 * @throws ExpenseException
 	 */
 	private function reverseCash(bool $status, string $reference): void
@@ -196,7 +190,6 @@ class ExpenseProcess implements ExpenseContract
 			$status
 		);
 	}
-
 
 	/**
 	 * @param array $expenseResponse
@@ -230,24 +223,23 @@ class ExpenseProcess implements ExpenseContract
 				$this->credentials['amount'],
 				$status,
 				$this->type,
-				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type
+				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type,
+				$this->expenseResponse
 			);
 		}
 
 		return $expenseResponse;
 	}
 
-
 	/**
 	 * @param string $type
-	 * @param array $requestBody
 	 * @param string|null $url
 	 * @return array
 	 * @throws ExpenseException
 	 */
-	public function initiateTransaction(string $type, array $requestBody, string $url = null): array
+	public function initiateTransaction(string $type, string $url = null): array
 	{
-		return $this->withdrawAmount($type)->processTransaction($type, $requestBody, $url)->processExpenseResponse();
+		return $this->withdrawAmount($type)->processTransaction($type, $url)->processExpenseResponse();
 	}
 
 	/**

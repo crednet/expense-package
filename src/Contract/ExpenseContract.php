@@ -8,12 +8,11 @@ interface ExpenseContract
 {
     /**
      * @param string $type
-     * @param array $requestBody
      * @param string $url
      * @return array
      * @throws ExpenseException
      */
-    public function initiateTransaction(string $type, array $requestBody, string $url): array;
+    public function initiateTransaction(string $type, string $url): array;
 
     /**
      * @param string $reference
