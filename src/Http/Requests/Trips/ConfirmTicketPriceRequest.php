@@ -56,7 +56,7 @@ class ConfirmTicketPriceRequest extends FormRequest
             'air_travellers.*.address.address_line_2' => ['nullable'],
             'air_travellers.*.address.city' => ['required'],
             'air_travellers.*.address.country_code' => ['required'],
-            'air_travellers.*.documents' => ['sometimes', 'required', 'array'],
+            'air_travellers.*.documents' => ['required_if:flight_type,' . TripsService::FLIGHT_INTERNATIONAL, 'array'],
             'air_travellers.*.documents.*.doc_type' => ['in:DOCS,DOCO,DACA'],
             'air_travellers.*.documents.*.issue_location' => [ 'size:3'],
             'air_travellers.*.documents.*.birth_country_code' => ['size:3'],
@@ -64,15 +64,6 @@ class ConfirmTicketPriceRequest extends FormRequest
             'air_travellers.*.documents.*.issue_country_code' => ['size:3'],
             'air_travellers.*.documents.*.effective_date' => ['date'],
             'air_travellers.*.documents.*.inner_doc_type' => ['nullable', 'in:visa,passport'],
-            'billing_address' => 'required|array',
-            'billing_address.*' => [
-                'contact_name' => 'required',
-                'address_line_1' => 'required',
-                'city' => 'required',
-                'country_code' => 'required',
-                'contact_mobile_no' => 'required',
-                'contact_email' => ['required', 'email']
-            ]
         ];
     }
 }

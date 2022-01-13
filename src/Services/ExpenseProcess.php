@@ -80,11 +80,11 @@ class ExpenseProcess implements ExpenseContract
 	}
 
 	/**
-	 * @param $requestBody
+	 * array @param $requestBody
 	 * @return void
 	 * @throws ExpenseException
 	 */
-	private function withdrawFromCash($requestBody): void
+	private function withdrawFromCash(array $requestBody): void
 	{
 		$walletUrl = config('expense.cash.base_url') . 'wallets';
 		$requestBody['wallet_id'] = $this->credentials['wallet_id'];
@@ -170,11 +170,11 @@ class ExpenseProcess implements ExpenseContract
 	}
 
 	/**
-	 * @param $status
-	 * @param $reference
+	 * bool @param $status
+	 * string @param $reference
 	 * @throws ExpenseException
 	 */
-	private function reverseCash($status, $reference): void
+	private function reverseCash(bool $status, string $reference): void
 	{
 		$walletUpdateUrl = config('expense.cash.base_url') . 'wallets/' . $this->credentials['wallet_id'] . '/transactions/' . $reference;
 

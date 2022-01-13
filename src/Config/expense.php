@@ -3,9 +3,10 @@
 return [
 	'bvn_model' => '\App\UserProfile',
 	'bill_transactions_model' => '\App\BillTransaction',
+    'configuration_model' => 'App\Configuration',
+    'transfer_model' => 'App\Models\Transfer\Transfer',
 	'credit_card_transaction' => '\App\Services\V2\CreditCard\CreditCardTransactionService',
 	'bvn_column' => 'bvn',
-
 	'cash' => [
 		'base_url' => env('CPCASH_BASEURL'),
 		'private_key' => [

@@ -21,4 +21,6 @@ class Enum
     public const ELECTRICITY_REQUEST = 'electricity request';
     public const VERIFY_ELECTRICITY = 'verify electricity';
 	public const PRODUCTION = 'production';
+    public const WALLET_TYPE_CREDIT = 'credpal_card';
+    public const WALLET_TYPE_CASH= 'credpal_cash';
 }
