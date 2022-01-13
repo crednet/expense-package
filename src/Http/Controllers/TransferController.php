@@ -39,12 +39,12 @@ class TransferController extends Controller
             'user_id',
 			'wallet_id',
 			'account_id',
-			'wallet_type',
-			'amount',
-			'cbs_account_number',
-			'account_number',
-			'account_name',
-			'bank_code'
+            'wallet_type',
+            'amount',
+            'cbs_account_number',
+            'account_number',
+            'account_name',
+            'bank_code'
         ]);
         $credentials = collect($data);
         $credentials->put('description', $request->description ?? null);
