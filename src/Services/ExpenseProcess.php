@@ -76,7 +76,6 @@ class ExpenseProcess implements ExpenseContract
 		return $this;
 	}
 
-
 	/**
 	 * @throws ExpenseException
 	 */
