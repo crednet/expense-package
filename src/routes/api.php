@@ -65,6 +65,3 @@ Route::group([
     Route::get('trips', 'TripsController@index');
 });
 
-//Route::group(['middleware' => 'auth:api', 'prefix' => 'expense-service'], function () {
-//
-//});

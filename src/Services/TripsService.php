@@ -28,7 +28,7 @@ class TripsService extends ExpenseProcess
 
         self::logTripsRequest($this->credentials->toArray());
 
-        $bookTicket = $this->initiateTransaction(Enum::TRIPS, $this->credentials->toArray(),  'trips/book-ticket');
+        $bookTicket = $this->initiateTransaction(Enum::TRIPS, 'trips/book-ticket');
 
         if ($bookTicket['status']){
             $this->updateTripsRequestLog($bookTicket['data'], Enum::SUCCESS);
