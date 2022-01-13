@@ -37,7 +37,9 @@ class SearchRequest extends FormRequest
             'flight_airlines.*.airline_code' => 'required',
             'flight_airlines.*.excluded' => 'required|bool',
             'flight_classes' => 'required|array',
-            'flight_classes.*.name' => 'required|in:Economy,first,business,premium'
+            'flight_classes.*.name' => 'required|in:economy,first,business,premium',
+            'order_by_flight_time' => 'nullable|in:asc,desc',
+            'order_by_price ' => 'nullable|in:asc,desc',
         ];
     }
 }

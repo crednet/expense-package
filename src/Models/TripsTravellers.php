@@ -12,4 +12,9 @@ class TripsTravellers extends Model
     protected $guarded = [
         //
     ];
+    
+    public function trips()
+    {
+        return $this->belongsTo(TripsTravellers::class);
+    }
 }

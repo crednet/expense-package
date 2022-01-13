@@ -11,11 +11,11 @@ class TripsController extends Controller
     public function index()
     {
         return $this->datatable(
-            Trips::with('user.profile', 'user.company'),
+            Trips::with('user.profile', 'user.company', 'tripsTravellers'),
             [
                 "search" => function ($query, $searchString) {
                     $query->whereHas('user', function ($user) use ($searchString) {
-                        $user->orWhereRaw("CONCAT(name, ' ', last_name) like '%{$searchString}%'")
+                        $user->whereRaw("CONCAT(name, ' ', last_name) like '%{$searchString}%'")
                             ->orwhere('id', 'like', "%{$searchString}%")
                             ->orwhere('last_name', 'like', "%{$searchString}%")
                             ->orwhere('email', 'like', "%{$searchString}%")
