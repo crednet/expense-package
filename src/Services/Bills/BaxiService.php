@@ -27,6 +27,8 @@ class BaxiService extends ExpenseProcess
 	{
 		DuplicateTransactionService::checkDuplicateTransaction(
 			Enum::AIRTIME,
+            Enum::WALLET_TYPE_CASH,
+            $this->credentials['wallet_id'],
 			$this->credentials['phone'],
 			$this->credentials->toArray()
 		);
@@ -50,6 +52,8 @@ class BaxiService extends ExpenseProcess
 	{
 		DuplicateTransactionService::checkDuplicateTransaction(
 			Enum::DATABUNDLE,
+            Enum::WALLET_TYPE_CASH,
+            $this->credentials['wallet_id'],
 			$this->credentials['phone'],
 			$this->credentials->toArray()
 		);
@@ -76,6 +80,8 @@ class BaxiService extends ExpenseProcess
 
 		DuplicateTransactionService::checkDuplicateTransaction(
 			Enum::MULTICHOICE_SUBSCRIPTION,
+            Enum::WALLET_TYPE_CASH,
+            $this->credentials['wallet_id'],
 			$this->credentials['smartcard_number'],
 			$data
 		);
@@ -103,6 +109,8 @@ class BaxiService extends ExpenseProcess
 	{
 		DuplicateTransactionService::checkDuplicateTransaction(
 			Enum::ELECTRICITY_REQUEST,
+            Enum::WALLET_TYPE_CASH,
+            $this->credentials['wallet_id'],
 			$this->credentials['account_number'],
 			$this->credentials->toArray()
 		);
