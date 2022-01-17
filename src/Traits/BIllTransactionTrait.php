@@ -6,7 +6,7 @@ use Credpal\Expense\Utilities\Enum;
 
 trait BIllTransactionTrait
 {
-	public string $billsTransaction;
+	public $billsTransaction;
 
 	public function logBillsTransactions(
 		$accountId,
