@@ -4,12 +4,14 @@ namespace Credpal\Expense\Services;
 
 use Credpal\Expense\Contract\ExpenseContract;
 use Credpal\Expense\Exceptions\ExpenseException;
+use Credpal\Expense\Traits\BIllTransactionTrait;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
 class ExpenseProcess implements ExpenseContract
 {
+	use BIllTransactionTrait;
 	/**
 	 * @var Collection
 	 */
@@ -72,6 +74,8 @@ class ExpenseProcess implements ExpenseContract
 		} elseif($this->walletType === Enum::CREDIT) {
 			$this->withdrawFromCredit($requestBody);
 		}
+
+		($this->type !== ENUM::TRANSFER) ? $this->initialTransactionLogForBills($this->type) : true;
 
 		return $this;
 	}
@@ -152,15 +156,13 @@ class ExpenseProcess implements ExpenseContract
 	{
 		$status = $expenseResponse['status'];
 
-		$reference = $this->reference ?? $expenseResponse['data']['reference'];
-
 		if (!$status) {
 			// update to reverse wallet if the transfer failed
-
+			$transactionReference = $expenseResponse['data']['reference'] ?? $this->reference;
 			if ($this->walletType === Enum::DEBIT) {
-				$this->reverseCash($status, $reference);
+				$this->reverseCash($status, $transactionReference);
 			} elseif($this->walletType === Enum::CREDIT) {
-				$this->reverseCredit($status, $reference);
+				$this->reverseCredit($status, $transactionReference);
 			}
 		}
 	}
@@ -240,6 +242,19 @@ class ExpenseProcess implements ExpenseContract
 	public function initiateTransaction(string $type, string $url = null): array
 	{
 		return $this->withdrawAmount($type)->processTransaction($type, $url)->processExpenseResponse();
+	}
+
+	private function initialTransactionLogForBills($type): void
+	{
+		$this->logBillsTransactions(
+			$this->credentials['account_id'] ?? null,
+			$this->credentials['wallet_id'] ?? null,
+			$this->credentials['amount'],
+			$this->walletResponse['data']['transaction']['reference'] ?? $this->reference,
+			$type,
+			$this->credentials['wallet_type'],
+			$this->credentials['account_number'] ?? $this->credentials['smartcard_number'] ?? $this->credentials['phone']
+		);
 	}
 
 	/**
