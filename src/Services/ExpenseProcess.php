@@ -132,13 +132,13 @@ class ExpenseProcess implements ExpenseContract
 		$this->expenseRequestBody['bvn'] = $bvnInstance->query()
 			->whereUserId($this->credentials['user_id'])
 			->first()->{$bvnColumn} ?? null;
-		\Log::info('check if bvn dey'. $this->expenseRequestBody);
+		\Log::info('check if bvn dey'. $this->expenseRequestBody['bvn']);
 
 		$this->expenseRequestBody['email'] = $emailInstance->query()
 			->whereId($this->credentials['user_id'])
 			->first()->{$emailColumn} ?? null;
 		
-		\Log::info('check if email dey'. $this->expenseRequestBody);
+		\Log::info('check if email dey'. $this->expenseRequestBody['email']);
 	}
 
 	/**
@@ -159,7 +159,7 @@ class ExpenseProcess implements ExpenseContract
 	{
 		$status = $expenseResponse['status'];
 		
-		\Log::info('request came from payment'. $expenseResponse);
+		\Log::info('request came from payment');
 
 		if (!$status) {
 			// update to reverse wallet if the transfer failed
