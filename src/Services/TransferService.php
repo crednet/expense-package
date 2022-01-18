@@ -26,6 +26,8 @@ class TransferService extends ExpenseProcess
      */
     public function makeTransfer(): array
     {
+        logger('transfering');
+        logger($this->credentials);
         DuplicateTransactionService::checkDuplicateTransfer(
             Enum::WALLET_TYPE_CASH,
             $this->credentials['wallet_id'],
