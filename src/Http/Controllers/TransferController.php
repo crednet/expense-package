@@ -35,6 +35,7 @@ class TransferController extends Controller
      */
     public function store(TransferRequest $request): JsonResponse
     {
+        logger('controller');
         $data = $request->only([
             'user_id',
 			'wallet_id',
@@ -50,6 +51,7 @@ class TransferController extends Controller
         $credentials->put('description', $request->description ?? null);
         $transfer = new TransferService($credentials);
         $result = $transfer->makeTransfer();
+        logger($result);
         return $this->success($result['data']);
     }
 
