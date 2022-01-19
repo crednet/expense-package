@@ -27,15 +27,17 @@ class TransferService extends ExpenseProcess
 	public function makeTransfer(): array
 	{
 		$this->setDestinationAccountNumberAndUserBankCode();
+		logger('transfering');
+		logger($this->credentials);
 		DuplicateTransactionService::checkDuplicateTransfer(
 			Enum::WALLET_TYPE_CASH,
 			$this->credentials['wallet_id'],
 			$this->credentials['amount']
 		);
 		$this->expenseRequestBody = [
+			'account_name' => $this->credentials['account_name'],
 			'account_number' => $this->credentials['account_number'],
 			'bank_code' => $this->credentials['bank_code'],
-			'account_name' => $this->credentials['account_name'],
 		];
 
 		return $this->initiateTransaction(ENUM::TRANSFER, 'transfers');
