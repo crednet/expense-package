@@ -12,7 +12,8 @@ Route::group([
     'prefix' => 'api/expense',
     'middleware' => ['auth:api']
 ], function () {
-    Route::post('transfers', 'TransferController@store');
+	Route::post('transfers', 'TransferController@transfer');
+//	Route::post('transfers', 'TransferController@store');
     Route::post('webhook/transfers', 'TransferController@webhook');
 
 	Route::group([

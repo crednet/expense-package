@@ -113,16 +113,15 @@ class ExpenseProcess implements ExpenseContract
 
 		$this->expenseRequestBody['amount'] = $this->credentials['amount'] ?? $this->walletResponse['data']['transaction']['amount'];
 		$this->expenseRequestBody['description'] = $this->credentials['description'] ?? $this->walletResponse['data']['transaction']['description'] ?? $type;
-		$this->expenseRequestBody['reference'] =  optional($this->walletResponse['data']['transaction'])['reference'] ?? $this->reference;
+		$this->expenseRequestBody['reference'] =  $this->walletResponse['data']['transaction']['reference'] ?? $this->reference;
 
 		$this->expenseResponse = sendRequestTo($transactionUrl, $this->expenseRequestBody, getPrivateKey(Enum::EXPENSE));
 
 		return $this;
 	}
 
-	private function accessUserBvnAndEmail()
+	private function accessUserBvnAndEmail(): void
 	{
-		\Log::info('start debugging payment comunication: 1');
 		$bvnModel = config('expense.bvn_model');
 		$bvnColumn = config('expense.bvn_column');
 		$emailModel = config('expense.email_model');
@@ -132,13 +131,11 @@ class ExpenseProcess implements ExpenseContract
 		$this->expenseRequestBody['bvn'] = $bvnInstance->query()
 			->whereUserId($this->credentials['user_id'])
 			->first()->{$bvnColumn} ?? null;
-		\Log::info('check if bvn dey'. $this->expenseRequestBody['bvn']);
 
 		$this->expenseRequestBody['email'] = $emailInstance->query()
 			->whereId($this->credentials['user_id'])
 			->first()->{$emailColumn} ?? null;
-		
-		\Log::info('check if email dey'. $this->expenseRequestBody['email']);
+
 	}
 
 	/**
@@ -158,7 +155,7 @@ class ExpenseProcess implements ExpenseContract
 	private function reverseWalletAndNotifyUserIfTransactionFailedOnInitiation(array $expenseResponse): void
 	{
 		$status = $expenseResponse['status'];
-		
+
 		\Log::info('request came from payment');
 
 		if (!$status) {
