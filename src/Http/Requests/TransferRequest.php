@@ -26,16 +26,15 @@ class TransferRequest extends FormRequest
     public function rules(): array
     {
          return [
-             'user_id' => ['required', "exists:users,id"],
+             'user_id' => ["required", "exists:users,id"],
              "wallet_id" => ["required"],
-			 'wallet_type' => ['required', Rule::in(Enum::DEBIT)],
+			 'wallet_type' => ["required", Rule::in(Enum::DEBIT)],
              "amount" => ["required", "numeric"],
              "cbs_account_number" => ["nullable", "numeric"],
              "account_number" => ["nullable", "numeric"],
              "account_name" => ["nullable", "string"],
              "bank_code" => ["nullable", "numeric"],
              "description" => ["nullable", "string"],
-			 "destination" => "nullable|in:personal,merchant,branch,company",
          ];
     }
 }
