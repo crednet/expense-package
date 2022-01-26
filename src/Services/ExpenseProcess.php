@@ -94,6 +94,7 @@ class ExpenseProcess implements ExpenseContract
 			$requestBody,
 			getPrivateKey(Enum::WALLET)
 		);
+
 	}
 
 	private function withdrawFromCredit($requestBody): void
@@ -129,12 +130,12 @@ class ExpenseProcess implements ExpenseContract
 		$bvnInstance = new $bvnModel();
 		$emailInstance = new $emailModel();
 		$this->expenseRequestBody['bvn'] = $bvnInstance->query()
-			->whereUserId($this->credentials['user_id'])
-			->first()->{$bvnColumn} ?? null;
+				->whereUserId($this->credentials['user_id'])
+				->first()->{$bvnColumn} ?? null;
 
 		$this->expenseRequestBody['email'] = $emailInstance->query()
-			->whereId($this->credentials['user_id'])
-			->first()->{$emailColumn} ?? null;
+				->whereId($this->credentials['user_id'])
+				->first()->{$emailColumn} ?? null;
 
 	}
 
@@ -160,7 +161,7 @@ class ExpenseProcess implements ExpenseContract
 
 		if (!$status) {
 			// update to reverse wallet if the transfer failed
-			$transactionReference = $expenseResponse['data']['reference'] ?? $this->reference;
+			$transactionReference = $this->expenseRequestBody['reference'] ?? $this->reference;
 			if ($this->walletType === Enum::DEBIT) {
 				$this->reverseCash($status, $transactionReference);
 			} elseif($this->walletType === Enum::CREDIT) {
