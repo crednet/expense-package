@@ -12,8 +12,8 @@ use Credpal\Expense\Http\Requests\Baxi\VerifyAccountDetailsRequest;
 use Credpal\Expense\Http\Requests\Baxi\VerifyElectricityUserRequest;
 use Credpal\Expense\Services\Bills\BaxiService;
 use Credpal\Expense\Utilities\Enum;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class BaxiController extends Controller
@@ -241,6 +241,14 @@ class BaxiController extends Controller
 		$credentials = collect($request);
 		$baxi = new BaxiService($credentials);
 		$result = $baxi->electricityRequest();
+		return $this->success($result);
+	}
+
+	public function fetchBillTransaction(Request $request, $reference)
+	{
+		$credentials = collect($request);
+		$baxi = new BaxiService($credentials);
+		$result = $baxi->getBillTransaction($reference);
 		return $this->success($result);
 	}
 }

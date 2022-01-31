@@ -20,6 +20,7 @@ Route::group([
 		'prefix' => 'bills'
 	], function (){
 		Route::get('transactions', 'BaxiController@getAllBillTransactions');
+		Route::get('{reference}', 'BaxiController@fetchBillTransaction');
 		Route::get('billers', 'BaxiController@getBillers');
 		Route::get('biller-services', 'BaxiController@getBillerServices');
 		Route::get('biller-categories', 'BaxiController@getAllBillerCategory');

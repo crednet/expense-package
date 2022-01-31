@@ -48,7 +48,7 @@ class ExpenseProcess implements ExpenseContract
 		$creditCardTransactionModel = config('expense.credit_card_transaction');
 		$this->creditCardTransaction =
 			new $creditCardTransactionModel(
-				$this->credentials['amount'],
+				$this->credentials['amount'] ?? null,
 				$this->credentials['account_id'] ?? null,
 			);
 	}
@@ -258,6 +258,12 @@ class ExpenseProcess implements ExpenseContract
 			$this->credentials['wallet_type'],
 			$this->credentials['account_number'] ?? $this->credentials['smartcard_number'] ?? $this->credentials['phone']
 		);
+	}
+
+	public function getBillTransaction(string $reference)
+	{
+		$url = config('expense.expense.base_url') . "/bills/{$reference}";
+		return sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
 	}
 
 	/**
