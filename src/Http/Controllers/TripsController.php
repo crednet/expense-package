@@ -19,15 +19,16 @@ class TripsController extends Controller
         $searchResult = sendRequestAndThrowExceptionOnFailure(
             config('expense.expense.base_url') . '/trips/search',
             $request->validated(),
-            getPrivateKey(Enum::EXPENSE)
+            getPrivateKey(Enum::EXPENSE),
+            'get'
         );
         $configurationModel = config('expense.configuration_model');
 
         $searchResult['data']['mark_up_percentage'] = $configurationModel::value('trips_mark_up_percentage');
-        
+
         return $this->success($searchResult['data']);
     }
-    
+
     public function confirmTicket(ConfirmTicketPriceRequest $request)
     {
         $requestBody = $request->validated();
@@ -98,7 +99,7 @@ class TripsController extends Controller
 
         return $this->success($flightRules['data']);
     }
-    
+
     public function myFlightReservation(FlightReservationRequest $request)
     {
         $myReservations = sendRequestAndThrowExceptionOnFailure(
