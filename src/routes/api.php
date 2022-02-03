@@ -48,7 +48,7 @@ Route::group([
 	Route::group([
 		'prefix' => 'trips'
 	], function (){
-		Route::post('search', 'TripsController@search');
+		Route::get('search', 'TripsController@search');
 		Route::post('confirm-ticket', 'TripsController@confirmTicket');
 		Route::post('book', 'TripsController@bookTicket');
 		Route::post('cancel-ticket', 'TripsController@cancelTicket');
