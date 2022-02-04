@@ -89,6 +89,7 @@ class TripsController extends Controller
 
         return $this->success($tripsService['data']);
     }
+
     public function flightRule(FlightRulesRequest $request)
     {
         $flightRules = sendRequestAndThrowExceptionOnFailure(
@@ -109,5 +110,17 @@ class TripsController extends Controller
         );
 
         return $this->success($myReservations['data']);
+    }
+
+    public function getAirportList()
+    {
+        $flightRules = sendRequestAndThrowExceptionOnFailure(
+            config('expense.expense.base_url') . '/trips/airport-list',
+            [],
+            getPrivateKey(Enum::EXPENSE),
+            'get'
+        );
+
+        return $this->success($flightRules['data']);
     }
 }
