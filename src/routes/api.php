@@ -53,6 +53,7 @@ Route::group([
 		Route::post('cancel-ticket', 'TripsController@cancelTicket');
 		Route::post('flight-rules', 'TripsController@flightRule');
 		Route::post('flight-reservation', 'TripsController@myFlightReservation');
+		Route::get('airport-list', 'TripsController@getAirportList');
 	});
 
 });
