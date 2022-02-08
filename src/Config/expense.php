@@ -12,8 +12,10 @@ return [
 
 	// middleware section
 	'blacklisted' => '\App\Http\Middleware\Blacklisted::class',
-	'post_no_debit' => '\App\Http\Middleware\PostNoDebitRestriction::class',
 	'check_airtime_daily_usage' => '\App\Http\Middleware\CheckAirtimeDailyUsage::class',
+	'post_no_debit' => '\App\Http\Middleware\PostNoDebitRestriction::class',
+	'transaction_pin' => '\App\Http\Middleware\Auth\TransactionPinMiddleware::class',
+	'trusted_device' => '\App\Http\Middleware\Auth\TrustedDeviceMiddleware::class',
 
 	'cash' => [
 		'base_url' => env('CPCASH_BASEURL'),

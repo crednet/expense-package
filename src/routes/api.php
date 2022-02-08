@@ -41,8 +41,10 @@ Route::group([
 
 		Route::group(['middleware' => [
 			config('expense.blacklisted'),
-			config('expense.post_no_debit'),
 			config('expense.check_airtime_daily_usage'),
+			config('expense.post_no_debit'),
+			config('expense.transaction_pin'),
+			config('expense.trusted_device'),
 		]], function () {
 			Route::post('airtime-request', 'BaxiController@airtimeRequest');
 			Route::post('databundle-request', 'BaxiController@dataBundleRequest');
@@ -62,7 +64,6 @@ Route::group([
 		Route::post('flight-reservation', 'TripsController@myFlightReservation');
 		Route::get('airport-list', 'TripsController@getAirportList');
 	});
-
 });
 
 /** ========== Admin Expense Route ========= **/
