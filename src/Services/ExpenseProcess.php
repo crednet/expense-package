@@ -75,7 +75,8 @@ class ExpenseProcess implements ExpenseContract
 			$this->withdrawFromCredit($requestBody);
 		}
 
-		($this->type !== ENUM::TRANSFER) ? $this->initialTransactionLogForBills($this->type) : true;
+		($this->type !== ENUM::TRANSFER && $this->type !== ENUM::TRIPS)
+            ? $this->initialTransactionLogForBills($this->type) : true;
 
 		return $this;
 	}

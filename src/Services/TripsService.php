@@ -26,7 +26,9 @@ class TripsService extends ExpenseProcess
     {
         $this->credentials['description'] = "Trips - " . $this->credentials['flight_type'];
 
-        self::logTripsRequest($this->credentials->toArray());
+        $this->expenseRequestBody = $this->credentials->toArray();
+
+        self::logTripsRequest($this->expenseRequestBody);
 
         $bookTicket = $this->initiateTransaction(Enum::TRIPS, 'trips/book-ticket');
 
