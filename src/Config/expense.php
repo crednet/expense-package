@@ -10,6 +10,11 @@ return [
 	'transfer_model' => 'App\Models\Transfer\Transfer',
 	'credit_card_transaction' => '\App\Services\V2\CreditCard\CreditCardTransactionService',
 
+	// middleware section
+	'blacklisted' => '\App\Http\Middleware\Blacklisted::class',
+	'post_no_debit' => '\App\Http\Middleware\PostNoDebitRestriction::class',
+	'check_airtime_daily_usage' => '\App\Http\Middleware\CheckAirtimeDailyUsage::class',
+
 	'cash' => [
 		'base_url' => env('CPCASH_BASEURL'),
 		'private_key' => [

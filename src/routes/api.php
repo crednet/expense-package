@@ -1,26 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\{
-	CheckAirtimeDailyUsage,
-	PostNoDebitRestriction,
-	Blacklisted,
-	TrustedDeviceMiddleware,
-	TransactionPinMiddleware
-};
 
-    Route::get('/api/expense', function() {
-    	return 'Expense package';
-    });
+Route::get('/api/expense', function() {
+	return 'Expense package';
+});
 
 Route::group([
-    'namespace' => 'Credpal\Expense\Http\Controllers',
-    'prefix' => 'api/expense',
-    'middleware' => ['auth:api']
+	'namespace' => 'Credpal\Expense\Http\Controllers',
+	'prefix' => 'api/expense',
+	'middleware' => ['auth:api']
 ], function () {
 	Route::post('transfers', 'TransferController@transfer');
 //	Route::post('transfers', 'TransferController@store');
-    Route::post('webhook/transfers', 'TransferController@webhook');
+	Route::post('webhook/transfers', 'TransferController@webhook');
 
 	Route::group([
 		'prefix' => 'bills'
@@ -47,11 +40,9 @@ Route::group([
 		Route::post('verify-electricity-user', 'BaxiController@verifyElectricityUser');
 
 		Route::group(['middleware' => [
-			Blacklisted::class,
-			CheckAirtimeDailyUsage::class,
-			PostNoDebitRestriction::class,
-			TrustedDeviceMiddleware::class,
-			TransactionPinMiddleware::class
+			config('expense.blacklisted'),
+			config('expense.post_no_debit'),
+			config('expense.check_airtime_daily_usage'),
 		]], function () {
 			Route::post('airtime-request', 'BaxiController@airtimeRequest');
 			Route::post('databundle-request', 'BaxiController@dataBundleRequest');
@@ -76,10 +67,9 @@ Route::group([
 
 /** ========== Admin Expense Route ========= **/
 Route::group([
-    'namespace' => 'Credpal\Expense\Http\Controllers\Admin',
-    'prefix' => 'api/admin/expense',
-    'middleware' => ['auth:api']
+	'namespace' => 'Credpal\Expense\Http\Controllers\Admin',
+	'prefix' => 'api/admin/expense',
+	'middleware' => ['auth:api']
 ], function () {
-    Route::get('trips', 'TripsController@index');
+	Route::get('trips', 'TripsController@index');
 });
-
