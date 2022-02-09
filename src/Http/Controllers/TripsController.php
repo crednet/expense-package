@@ -20,7 +20,7 @@ class TripsController extends Controller
             config('expense.expense.base_url') . '/trips/search',
             $request->validated(),
             getPrivateKey(Enum::EXPENSE),
-            'get'
+            'post'
         );
         $configurationModel = config('expense.configuration_model');
 

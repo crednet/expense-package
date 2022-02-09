@@ -31,7 +31,7 @@ class SearchRequest extends FormRequest
             'flight_routes.*.origin_location_code' => 'required|size:3',
             'flight_routes.*.destination_location_code' => 'required|size:3',
             'flight_passengers' => 'required|array',
-            'flight_passengers.*.code' => 'required|string|size:3',
+            'flight_passengers.*.code' => 'required|string|size:3|in:ADT,CHD,INF',
             'flight_passengers.*.quantity' => 'required|integer',
             'flight_airlines' => 'required|array',
             'flight_airlines.*.airline_code' => 'required',
