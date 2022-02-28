@@ -2,7 +2,6 @@
 
 namespace Credpal\Expense\Traits;
 
-use Credpal\Expense\Utilities\Datatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -92,7 +91,7 @@ trait TResponse
         $resourceClass = null
     )
     {
-        $data = Datatable::make($query, $config, $resourceClass);
+        $data = config('expense.datatable_class')::make($query, $config, $resourceClass);
 
         if ($data instanceof BinaryFileResponse) {
             return $data;
@@ -104,6 +103,6 @@ trait TResponse
             'datatable' => $data,
         ];
 
-        return $this->success($response);
+        return response()->json($response, Response::HTTP_OK);
     }
 }
