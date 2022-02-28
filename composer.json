@@ -37,7 +37,6 @@
     },
     "require": {
         "php": "^7.4|^8.0",
-        "illuminate/auth": "^7.0|^8.0",
-        "maatwebsite/excel": "^3.1"
+        "illuminate/auth": "^7.0|^8.0"
     }
 }

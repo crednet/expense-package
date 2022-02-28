@@ -9,7 +9,7 @@ return [
 	'configuration_model' => 'App\Configuration',
 	'transfer_model' => 'App\Models\Transfer\Transfer',
 	'credit_card_transaction' => '\App\Services\V2\CreditCard\CreditCardTransactionService',
-
+	'datatable_class' => 'App\Helpers\Datatable',
 	// middleware section
 	'blacklisted' => '\App\Http\Middleware\Blacklisted::class',
 	'check_airtime_daily_usage' => '\App\Http\Middleware\CheckAirtimeDailyUsage::class',
