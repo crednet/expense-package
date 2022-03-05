@@ -17,13 +17,22 @@ class ExpenseServiceProvider extends ServiceProvider
 	{
 		$this->loadRoutesFrom(__DIR__ . '/routes/api.php');
 		$this->loadTranslationsFrom(__DIR__ . '/resources/lang', 'expense');
-		$this->publishes([
-			__DIR__ . '/Config/expense.php' => config_path('expense.php'),
-		]);
-		$this->registerMigrations();
+
+		$this->registerConfig()->registerMigrations();
 	}
 
-	protected function registerMigrations(): void
+	protected function registerConfig(): ExpenseServiceProvider
+	{
+		if ($this->app->runningInConsole()) {
+			$this->publishes([
+				__DIR__ . '/Config/expense.php' => config_path('expense.php'),
+			], 'expense');
+		}
+
+		return $this;
+	}
+
+	protected function registerMigrations(): ExpenseServiceProvider
 	{
 		if ($this->app->runningInConsole()) {
 			if (!class_exists('CreateTripsTable')) {
