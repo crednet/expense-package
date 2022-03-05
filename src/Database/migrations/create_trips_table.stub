@@ -1,0 +1,71 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use App\Traits\WithMigrationIndex;
+
+class CreateTripsTable extends Migration
+{
+    use WithMigrationIndex;
+
+    /**
+     * The table name for this migration
+     *
+     * @var string $schemaTable
+     */
+    protected $schemaTable = 'trips';
+
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
+    {
+        Schema::create($this->schemaTable, function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->index()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('account_id')->nullable()->index();
+            $table->string('wallet_id')->nullable()->index();
+            $table->string('wallet_type')->index();
+            $table->string('user_type');
+            $table->double('amount', 30, 2)->default(0.0);
+            $table->string('mark_up_percentage');
+            $table->string('transaction_reference')->index();
+            $table->string('session_id');
+            $table->string('type');
+            $table->string('status')->index();
+            $table->string('recipient_number');
+            $table->string('address');
+            $table->string('city');
+            $table->string('country_code');
+            $table->string('contact_mobile_no');
+            $table->string('contact_email');
+            $table->json('request_data');
+            $table->string('reference_number')->nullable();
+            $table->string('booking_reference_id')->nullable();
+            $table->string('booking_reference_type')->nullable();
+            $table->string('ticket_time_limit')->nullable();
+            $table->json('response_data')->nullable();
+            $table->string('departure_airport_code')->nullable();
+            $table->string('departure_airport_name')->nullable();
+            $table->string('arrival_airport_code')->nullable();
+            $table->string('arrival_airport_name')->nullable();
+            $table->string('departure_date')->nullable();
+            $table->string('arrival_date')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists($this->schemaTable);
+    }
+}

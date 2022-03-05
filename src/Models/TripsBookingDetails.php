@@ -9,7 +9,5 @@ class TripsBookingDetails extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = [
-        //
-    ];
+    protected array $guarded = [];
 }

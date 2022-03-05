@@ -19,7 +19,6 @@ Route::group([
 		'prefix' => 'bills'
 	], function (){
 		Route::get('transactions', 'BaxiController@getAllBillTransactions');
-		Route::get('{reference}', 'BaxiController@fetchBillTransaction');
 		Route::get('billers', 'BaxiController@getBillers');
 		Route::get('biller-services', 'BaxiController@getBillerServices');
 		Route::get('biller-categories', 'BaxiController@getAllBillerCategory');
@@ -41,6 +40,8 @@ Route::group([
 
 		Route::get('electricity-billers', 'BaxiController@getElectricityBillers');
 		Route::post('verify-electricity-user', 'BaxiController@verifyElectricityUser');
+
+		Route::get('{reference}', 'BaxiController@fetchBillTransaction');
 
 		Route::group(['middleware' => [
 			config('expense.blacklisted'),

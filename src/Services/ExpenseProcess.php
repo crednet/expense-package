@@ -124,17 +124,17 @@ class ExpenseProcess implements ExpenseContract
 
 	private function accessUserBvnAndEmail(): void
 	{
-		$bvnModel = config('expense.bvn_model');
+		$profileModel = config('expense.profile_model');
 		$bvnColumn = config('expense.bvn_column');
-		$emailModel = config('expense.email_model');
+		$userModel = config('expense.user_model');
 		$emailColumn = config('expense.email_column');
-		$bvnInstance = new $bvnModel();
-		$emailInstance = new $emailModel();
-		$this->expenseRequestBody['bvn'] = $bvnInstance->query()
+		$profileInstance = new $profileModel();
+		$userInstance = new $userModel();
+		$this->expenseRequestBody['bvn'] = $profileInstance->query()
 				->whereUserId($this->credentials['user_id'])
 				->first()->{$bvnColumn} ?? null;
 
-		$this->expenseRequestBody['email'] = $emailInstance->query()
+		$this->expenseRequestBody['email'] = $userInstance->query()
 				->whereId($this->credentials['user_id'])
 				->first()->{$emailColumn} ?? null;
 
