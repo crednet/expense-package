@@ -17,27 +17,36 @@ class ExpenseServiceProvider extends ServiceProvider
 	{
 		$this->loadRoutesFrom(__DIR__ . '/routes/api.php');
 		$this->loadTranslationsFrom(__DIR__ . '/resources/lang', 'expense');
-		$this->publishes([
-			__DIR__ . '/Config/expense.php' => config_path('expense.php'),
-		]);
-		$this->registerMigrations();
+
+		$this->registerConfig()->registerMigrations();
 	}
 
-	protected function registerMigrations(): void
+	protected function registerConfig(): ExpenseServiceProvider
+	{
+		if ($this->app->runningInConsole()) {
+			$this->publishes([
+				__DIR__ . '/Config/expense.php' => config_path('expense.php'),
+			], 'config');
+		}
+		return $this;
+	}
+
+	protected function registerMigrations(): ExpenseServiceProvider
 	{
 		if ($this->app->runningInConsole()) {
 			if (!class_exists('CreateTripsTable')) {
 				$this->publishes([
-					__DIR__ . 'Database/migrations/create_trips_table.stub' =>
+					__DIR__ . '/Database/migrations/create_trips_table.stub' =>
 						database_path('migrations/' . date('Y_m_d_His') . '_create_trips_table.php'),
 				], 'migrations');
 			}
 			if (!class_exists('CreateTripTravellersTable')) {
 				$this->publishes([
-					__DIR__ . 'Database/migrations/create_trip_travellers_table.stub' =>
+					__DIR__ . '/Database/migrations/create_trip_travellers_table.stub' =>
 						database_path('migrations/' . date('Y_m_d_His') . '_create_trip_travellers_table.php'),
 				], 'migrations');
 			}
 		}
+		return $this;
 	}
 }
