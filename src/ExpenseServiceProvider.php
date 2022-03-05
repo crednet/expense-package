@@ -28,7 +28,6 @@ class ExpenseServiceProvider extends ServiceProvider
 				__DIR__ . '/Config/expense.php' => config_path('expense.php'),
 			], 'expense');
 		}
-
 		return $this;
 	}
 
@@ -48,5 +47,6 @@ class ExpenseServiceProvider extends ServiceProvider
 				], 'migrations');
 			}
 		}
+		return $this;
 	}
 }
