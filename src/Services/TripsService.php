@@ -3,9 +3,9 @@
 namespace Credpal\Expense\Services;
 
 use App\Configuration;
-use Credpal\Expense\Models\TripsTravellers;
+use Credpal\Expense\Models\Trip;
 use Credpal\Expense\Exceptions\ExpenseException;
-use Credpal\Expense\Models\Trips;
+use Credpal\Expense\Models\TripsTraveller;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Support\Facades\DB;
 
@@ -22,13 +22,16 @@ class TripsService extends ExpenseProcess
     public const FLIGHT_LOCAL = 'local';
     public const FLIGHT_INTERNATIONAL = 'international';
 
-    public function bookTicket()
+	/**
+	 * @throws ExpenseException
+	 */
+	public function bookTicket()
     {
         $this->credentials['description'] = "Trips - " . $this->credentials['flight_type'];
 
         $this->expenseRequestBody = $this->credentials->toArray();
 
-        self::logTripsRequest($this->expenseRequestBody);
+        $this->logTripsRequest($this->expenseRequestBody);
 
         $bookTicket = $this->initiateTransaction(Enum::TRIPS, 'trips/book-ticket');
 
@@ -39,16 +42,18 @@ class TripsService extends ExpenseProcess
         return $bookTicket;
     }
 
-    /**
-     * @param array $data
-     */
-    public function logTripsRequest(array $data) : Trips
+	/**
+	 * @param array $data
+	 * @return Trip
+	 * @throws ExpenseException
+	 */
+    public function logTripsRequest(array $data) : Trip
     {
         try {
             $configurationModel = config('expense.configuration_model');
             DB::beginTransaction();
 
-            $trips = Trips::create(
+            $trips = Trip::create(
                 [
                     'user_id' => $data['user_id'],
                     'account_id' => $data['account_id'] ?? null,
@@ -73,7 +78,7 @@ class TripsService extends ExpenseProcess
 
             foreach ($data['air_travellers'] as $traveller)
             {
-                TripsTravellers::create([
+                TripsTraveller::create([
                     "trip_id" => $trips->id,
                     "passenger_type_code" => $traveller["passenger_type_code"],
                     "first_name" => $traveller["first_name"],
@@ -98,9 +103,9 @@ class TripsService extends ExpenseProcess
 
     public function updateTripsRequestLog($data, $status)
     {
-        $trips = Trips::where('reference', $this->reference)->firstOrFail();
+        $trips = Trip::where('transaction_reference', $this->reference)->firstOrFail();
 
-        if ($this->credentials["flight_type"] == TripsService::FLIGHT_LOCAL) {
+        if ($this->credentials["flight_type"] === self::FLIGHT_LOCAL) {
             $data = $data[0];
         }
 
@@ -124,7 +129,7 @@ class TripsService extends ExpenseProcess
         ]);
 
         foreach ($airTravellers as $air_traveller) {
-            $traveller = TripsTravellers::where('trip_id', $trips->id)
+            $traveller = TripsTraveller::where('trip_id', $trips->id)
                 ->where('first_name', $air_traveller["first_name"])
                 ->where('last_name', $air_traveller["last_name"])
                 ->where('dob', substr($air_traveller["birth_date"], 0, 10))
@@ -138,7 +143,7 @@ class TripsService extends ExpenseProcess
 
     public static function resultData($flightyType, $data)
     {
-        if ($flightyType == self::FLIGHT_LOCAL) {
+        if ($flightyType === self::FLIGHT_LOCAL) {
             $data['data'] = $data['data'][0];
             return $data;
         }

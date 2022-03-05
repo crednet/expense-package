@@ -5,13 +5,11 @@ namespace Credpal\Expense\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Trips extends Model
+class Trip extends Model
 {
     use SoftDeletes;
 
-    protected $guarded = [
-        //
-    ];
+    protected $guarded = [];
 
     public function user()
     {
@@ -64,6 +62,6 @@ class Trips extends Model
 
     public function tripsTravellers()
     {
-        return $this->hasMany(TripsTravellers::class, "trip_id");
+        return $this->hasMany(TripsTraveller::class, 'trip_id');
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
 return [
-	'bvn_model' => '\App\UserProfile',
-	'email_model' => '\App\User',
+	'profile_model' => '\App\UserProfile',
+	'user_model' => '\App\User',
 	'bvn_column' => 'bvn',
 	'email_column' => 'email',
 	'bill_transactions_model' => '\App\BillTransaction',

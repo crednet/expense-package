@@ -5,16 +5,14 @@ namespace Credpal\Expense\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TripsTravellers extends Model
+class TripsTraveller extends Model
 {
     use SoftDeletes;
 
-    protected $guarded = [
-        //
-    ];
+    protected $guarded = [];
     
     public function trips()
     {
-        return $this->belongsTo(TripsTravellers::class);
+        return $this->belongsTo(Trip::class);
     }
 }
