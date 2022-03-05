@@ -34,7 +34,7 @@ class ExpenseServiceProvider extends ServiceProvider
 			}
 			if (!class_exists('CreateTripTravellersTable')) {
 				$this->publishes([
-					__DIR__ . 'Database/migrations/_create_trip_travellers_table.stub' =>
+					__DIR__ . 'Database/migrations/create_trip_travellers_table.stub' =>
 						database_path('migrations/' . date('Y_m_d_His') . '_create_trip_travellers_table.php'),
 				], 'migrations');
 			}
