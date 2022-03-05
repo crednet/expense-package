@@ -28,13 +28,13 @@ class ExpenseServiceProvider extends ServiceProvider
 		if ($this->app->runningInConsole()) {
 			if (!class_exists('CreateTripsTable')) {
 				$this->publishes([
-					__DIR__ . 'Database/migrations/create_trips_table.stub' =>
+					__DIR__ . '/Database/migrations/create_trips_table.stub' =>
 						database_path('migrations/' . date('Y_m_d_His') . '_create_trips_table.php'),
 				], 'migrations');
 			}
 			if (!class_exists('CreateTripTravellersTable')) {
 				$this->publishes([
-					__DIR__ . 'Database/migrations/create_trip_travellers_table.stub' =>
+					__DIR__ . '/Database/migrations/create_trip_travellers_table.stub' =>
 						database_path('migrations/' . date('Y_m_d_His') . '_create_trip_travellers_table.php'),
 				], 'migrations');
 			}
