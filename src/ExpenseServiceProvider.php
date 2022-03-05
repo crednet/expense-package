@@ -26,7 +26,7 @@ class ExpenseServiceProvider extends ServiceProvider
 		if ($this->app->runningInConsole()) {
 			$this->publishes([
 				__DIR__ . '/Config/expense.php' => config_path('expense.php'),
-			], 'expense');
+			], 'config');
 		}
 		return $this;
 	}
