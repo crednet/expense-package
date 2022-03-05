@@ -9,7 +9,7 @@ class TripsTraveller extends Model
 {
     use SoftDeletes;
 
-    protected array $guarded = [];
+    protected $guarded = [];
     
     public function trips()
     {
