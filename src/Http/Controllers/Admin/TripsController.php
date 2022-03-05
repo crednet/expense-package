@@ -3,8 +3,8 @@
 namespace Credpal\Expense\Http\Controllers\Admin;
 
 use Credpal\Expense\Http\Controllers\Controller;
+use Credpal\Expense\Models\Trip;
 use Illuminate\Http\Request;
-use Credpal\Expense\Models\Trips;
 
 class TripsController extends Controller
 {
