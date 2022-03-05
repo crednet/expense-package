@@ -11,7 +11,7 @@ class TripsController extends Controller
     public function index()
     {
         return $this->datatable(
-            Trips::with('user.profile', 'user.company', 'tripsTravellers'),
+            Trip::with('user.profile', 'user.company', 'tripsTravellers'),
             [
                 "search" => function ($query, $searchString) {
                     $query->whereHas('user', function ($user) use ($searchString) {
