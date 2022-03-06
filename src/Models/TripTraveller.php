@@ -5,7 +5,7 @@ namespace Credpal\Expense\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TripsTraveller extends Model
+class TripTraveller extends Model
 {
     use SoftDeletes;
 

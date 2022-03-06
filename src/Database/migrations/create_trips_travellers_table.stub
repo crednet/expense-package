@@ -25,7 +25,7 @@ class CreateTripTravellersTable extends Migration
     {
         Schema::create($this->schemaTable, function (Blueprint $table) {
             $table->id();
-           $table->foreignId('trips_id')->index()
+           $table->foreignId('trip_id')->index()
                            ->constrained('trips')
                            ->cascadeOnDelete();
             $table->string('passenger_type_code')->nullable();
