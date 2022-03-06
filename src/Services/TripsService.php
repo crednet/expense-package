@@ -50,7 +50,7 @@ class TripsService extends ExpenseProcess
 	public function logTripsRequest(array $data) : Trip
 	{
 		$configurationModel = config('expense.configuration_model');
-		DB::beginTransaction();
+
 		$trips = Trip::create(
 			[
 				'user_id' => $data['user_id'],
@@ -90,12 +90,6 @@ class TripsService extends ExpenseProcess
 			]);
 		}
 
-		if (!$trips) {
-			DB::rollBack();
-			throw new ExpenseException();
-		}
-		DB::commit();
-
 		return $trips;
 	}
 
@@ -127,7 +121,7 @@ class TripsService extends ExpenseProcess
 		]);
 
 		foreach ($airTravellers as $air_traveller) {
-			$traveller = TripsTraveller::where('trip_id', $trips->id)
+			$traveller = TripTraveller::where('trip_id', $trips->id)
 				->where('first_name', $air_traveller["first_name"])
 				->where('last_name', $air_traveller["last_name"])
 				->where('dob', substr($air_traveller["birth_date"], 0, 10))
