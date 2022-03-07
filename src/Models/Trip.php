@@ -62,6 +62,6 @@ class Trip extends Model
 
     public function tripsTravellers()
     {
-        return $this->hasMany(TripsTraveller::class, 'trip_id');
+        return $this->hasMany(TripTraveller::class, 'trip_id');
     }
 }
