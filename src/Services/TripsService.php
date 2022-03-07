@@ -127,9 +127,10 @@ class TripsService extends ExpenseProcess
 				->where('dob', substr($air_traveller["birth_date"], 0, 10))
 				->first();
 
-			$traveller['e_ticket_number'] = $air_traveller["e_ticket_number"];
-			$traveller['traveller_reference_id'] = $air_traveller["traveller_reference_id"];
-			$traveller->save();
+			$traveller->update([
+				'e_ticket_number' => $air_traveller["e_ticket_number"],
+				'traveller_reference_id' => $air_traveller["traveller_reference_id"]
+			]);
 		}
 	}
 
