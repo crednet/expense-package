@@ -134,10 +134,10 @@ class TripsService extends ExpenseProcess
 	}
 
 	/**
-	 * @param $dob
+	 * @param string $dob
 	 * @return string
 	 */
-	protected function refactorBirthDate($dob): string
+	protected function refactorBirthDate(string $dob): string
 	{
 		$dobArray = [];
 
