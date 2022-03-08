@@ -45,7 +45,6 @@ class TripsService extends ExpenseProcess
 	/**
 	 * @param array $data
 	 * @return Trip
-	 * @throws ExpenseException
 	 */
 	public function logTripsRequest(array $data) : Trip
 	{
@@ -76,13 +75,14 @@ class TripsService extends ExpenseProcess
 
 		foreach ($data['air_travellers'] as $traveller)
 		{
+			$dob = $this->refactorBirthDate($traveller["birth_date"]);
 			TripTraveller::create([
 				"trip_id" => $trips->id,
 				"passenger_type_code" => $traveller["passenger_type_code"],
-				"first_name" => $traveller["first_name"],
-				"last_name" => $traveller["last_name"],
+				"first_name" => ucfirst(strtolower($traveller["first_name"])),
+				"last_name" => ucfirst(strtolower($traveller["last_name"])),
 				"middle_name" => $traveller["middle_name"] ?? null,
-				"dob" => $traveller["birth_date"],
+				"dob" => $dob,
 				"title" => $traveller["name_prefix"],
 				"gender" => $traveller["gender"],
 				"address" => json_encode($traveller["address"]),
@@ -104,7 +104,6 @@ class TripsService extends ExpenseProcess
 		$flightDetails = $data['flight_sets'][0]['flight_entries'][0];
 		$airTravellers = $data["air_travellers"];
 
-
 		$trips->update([
 			"reference_number" => $data["reference_number"],
 			"booking_reference_id" => $data["booking_reference_id"],
@@ -122,8 +121,8 @@ class TripsService extends ExpenseProcess
 
 		foreach ($airTravellers as $air_traveller) {
 			$traveller = TripTraveller::where('trip_id', $trips->id)
-				->where('first_name', $air_traveller["first_name"])
-				->where('last_name', $air_traveller["last_name"])
+				->where('first_name', ucfirst(strtolower($air_traveller["first_name"])))
+				->where('last_name', ucfirst(strtolower($air_traveller["last_name"])))
 				->where('dob', substr($air_traveller["birth_date"], 0, 10))
 				->first();
 
@@ -132,6 +131,26 @@ class TripsService extends ExpenseProcess
 				'traveller_reference_id' => $air_traveller["traveller_reference_id"]
 			]);
 		}
+	}
+
+	/**
+	 * @param string $dob
+	 * @return string
+	 */
+	protected function refactorBirthDate(string $dob): string
+	{
+		$dobArray = [];
+
+		if (strpos($dob, '/')) {
+			$dobArray = explode('/', $dob);
+		}
+		if (strpos($dob, '-')) {
+			$dobArray = explode('-', $dob);
+		}
+		$lengthOfFirstItem = strlen($dobArray[0]);
+		$finalDobArray = ($lengthOfFirstItem > 3) ? $dobArray : array_reverse($dobArray);
+
+		return implode('-', $finalDobArray);
 	}
 
 	public static function resultData($flightyType, $data)
