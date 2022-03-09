@@ -120,16 +120,21 @@ class TripsService extends ExpenseProcess
 		]);
 
 		foreach ($airTravellers as $air_traveller) {
-			$traveller = TripTraveller::where('trip_id', $trips->id)
-				->where('first_name', ucfirst(strtolower($air_traveller["first_name"])))
-				->where('last_name', ucfirst(strtolower($air_traveller["last_name"])))
-				->where('dob', substr($air_traveller["birth_date"], 0, 10))
-				->first();
+			$traveller = TripTraveller::where(function ($q) use ($trips, $air_traveller) {
+				$q->where('trip_id', $trips->id)
+					->where('first_name', ucfirst(strtolower($air_traveller["first_name"])))
+					->where('last_name', ucfirst(strtolower($air_traveller["last_name"])));
+			})->where(function ($q) use ($air_traveller) {
+				$q->where('dob', substr($air_traveller["birth_date"], 0, 10))
+					->orwhereNull('traveller_reference_id');
+			})->first();
 
-			$traveller->update([
-				'e_ticket_number' => $air_traveller["e_ticket_number"],
-				'traveller_reference_id' => $air_traveller["traveller_reference_id"]
-			]);
+			if (!is_null($traveller)) {
+				$traveller->update([
+					'e_ticket_number' => $air_traveller["e_ticket_number"],
+					'traveller_reference_id' => $air_traveller["traveller_reference_id"]
+				]);
+			}
 		}
 	}
 
