@@ -49,13 +49,13 @@ class DuplicateTransactionService
         }
     }
 
-    public static function checkDuplicateTransfer($accountType, $accountId, $amount)
+    public static function checkDuplicateTransfer($accountType, $accountId, $amount, ?int $userId = null)
     {
         $configurationModel = config('expense.configuration_model');
         $duplicateTransactionCheckInterval = $configurationModel::value('duplicate_transaction_check_interval', 3);
         $transferModel = config('expense.transfer_model');
 
-        $transfer = $transferModel::where('user_id', auth()->user()->id)
+        $transfer = $transferModel::where('user_id', $userId ?? auth()->user()->id)
             ->where('amount', $amount)
             ->where(function ($query) {
                 $query->where('status', 'pending')
