@@ -57,24 +57,24 @@ Route::group([
 		});
 	});
 
-	Route::group([
-		'prefix' => 'trips'
-	], function (){
-		Route::post('search', 'TripsController@search');
-		Route::post('confirm-ticket', 'TripsController@confirmTicket');
-		Route::post('book', 'TripsController@bookTicket');
-		Route::post('cancel-ticket', 'TripsController@cancelTicket');
-		Route::post('flight-rules', 'TripsController@flightRule');
-		Route::post('flight-reservation', 'TripsController@myFlightReservation');
-		Route::get('airport-list', 'TripsController@getAirportList');
-	});
+//	Route::group([
+//		'prefix' => 'trips'
+//	], function (){
+//		Route::post('search', 'TripsController@search');
+//		Route::post('confirm-ticket', 'TripsController@confirmTicket');
+//		Route::post('book', 'TripsController@bookTicket');
+//		Route::post('cancel-ticket', 'TripsController@cancelTicket');
+//		Route::post('flight-rules', 'TripsController@flightRule');
+//		Route::post('flight-reservation', 'TripsController@myFlightReservation');
+//		Route::get('airport-list', 'TripsController@getAirportList');
+//	});
 });
 
 /** ========== Admin Expense Route ========= **/
-Route::group([
-	'namespace' => 'Credpal\Expense\Http\Controllers\Admin',
-	'prefix' => 'api/admin/expense',
-	'middleware' => ['auth:api']
-], function () {
-	Route::get('trips', 'TripsController@index');
-});
+//Route::group([
+//	'namespace' => 'Credpal\Expense\Http\Controllers\Admin',
+//	'prefix' => 'api/admin/expense',
+//	'middleware' => ['auth:api']
+//], function () {
+//	Route::get('trips', 'TripsController@index');
+//});

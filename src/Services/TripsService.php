@@ -93,7 +93,7 @@ class TripsService extends ExpenseProcess
 		return $trips;
 	}
 
-	public function updateTripsRequestLog($data, $status)
+	public function updateTripsRequestLog($data, $status): void
 	{
 		$trips = Trip::where('transaction_reference', $this->reference)->firstOrFail();
 
