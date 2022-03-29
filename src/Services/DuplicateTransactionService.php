@@ -18,7 +18,7 @@ class DuplicateTransactionService
     {
         $configurationModel = config('expense.configuration_model');
 
-        $duplicateTransactionCheckInterval = $configurationModel::value('duplicate_transaction_check_interval', 3);
+        $duplicateTransactionCheckInterval = $configurationModel::value('duplicate_transaction_check_interval', 20);
 
 
         $billsTransaction = config('expense.bill_transactions_model')::where('type', $transactionType)
@@ -31,11 +31,11 @@ class DuplicateTransactionService
             })
             ->where('created_at', '>', Carbon::now()->subMinutes($duplicateTransactionCheckInterval));
 
-        if ($accountType == Enum::CREDIT) {
+        if ($accountType === Enum::CREDIT) {
             $billsTransaction = $billsTransaction->where('payment_method', Enum::WALLET_TYPE_CREDIT)
                 ->where('account_id', $data['account_id'])
                 ->first();
-        } elseif ($accountType == Enum::DEBIT) {
+        } elseif ($accountType === Enum::DEBIT) {
             $billsTransaction = $billsTransaction->where('payment_method', Enum::WALLET_TYPE_CASH)
                 ->where('wallet_id', $data['wallet_id'])
                 ->first();

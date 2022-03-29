@@ -25,4 +25,14 @@ interface ExpenseContract
 	 * @param string $reference
 	 */
 	public function getBillTransaction(string $reference);
+
+	public function reverseCash(bool $status, string $reference, string $walletId);
+
+	/**
+	 * @param bool $status
+	 * @param string $reference
+	 * @param string|int $accountId
+	 * @param float $amount
+	 */
+	public function reverseCredit(bool $status, string $reference, $accountId, float $amount);
 }
