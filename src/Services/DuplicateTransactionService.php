@@ -19,12 +19,19 @@ class DuplicateTransactionService
 		$configurationModel = config('expense.configuration_model');
 
 		$duplicateTransactionCheckInterval = $configurationModel::value('duplicate_transaction_check_interval', 5);
+		$duplicateTransactionAmountPercentage = $configurationModel::value('duplicate_transaction_amount_percentage', 0.5);
 
 		$billsTransaction = config('expense.bill_transactions_model')::where('type', $transactionType)
 			->where('user_id', auth()->user()->id)
 			->where('recipient_number', $recipientNumber)
 			->where('status', 'pending')
-			->whereBetween('amount', [($data['amount'] - 100), ($data['amount'] + 100)])
+			->whereBetween(
+				'amount',
+				[
+					($data['amount'] - ($data['amount'] * $duplicateTransactionAmountPercentage)),
+					($data['amount'] + ($data['amount'] * $duplicateTransactionAmountPercentage))
+				]
+			)
 			->where('created_at', '>', Carbon::now()->subMinutes($duplicateTransactionCheckInterval));
 
 		if ($accountType === Enum::CREDIT) {
@@ -39,7 +46,7 @@ class DuplicateTransactionService
 
 		if ($billsTransaction) {
 			throw new ExpenseException(
-				"A transaction with similar detail exist. Please try again in few minutes",
+				"A pending transaction with similar details exists. Please try again in a few minutes",
 				Response::HTTP_PRECONDITION_FAILED
 			);
 		}
