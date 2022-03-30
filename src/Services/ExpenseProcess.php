@@ -76,7 +76,7 @@ class ExpenseProcess implements ExpenseContract
 		}
 
 		($this->type !== ENUM::TRANSFER && $this->type !== ENUM::TRIPS)
-            ? $this->initialTransactionLogForBills($this->type) : true;
+			? $this->initialTransactionLogForBills($this->type) : true;
 
 		return $this;
 	}
@@ -144,7 +144,7 @@ class ExpenseProcess implements ExpenseContract
 	 * @return array
 	 * @throws ExpenseException
 	 */
-	private function processExpenseResponse(): array
+	public function processExpenseResponse(): array
 	{
 		$this->reverseWalletAndNotifyUserIfTransactionFailedOnInitiation($this->expenseResponse);
 		return $this->notifyUserOnSuccessfulTransactionInitiation($this->expenseResponse);
@@ -160,13 +160,20 @@ class ExpenseProcess implements ExpenseContract
 
 		\Log::info('request came from payment');
 
+		if (!$status && $this->type === ENUM::ELECTRICITY_REQUEST) {
+			throw new ExpenseException(
+				'Kindly hold on while your electricity request is being processed',
+				Response::HTTP_PRECONDITION_FAILED
+			);
+		}
+
 		if (!$status) {
-			// update to reverse wallet if the transfer failed
+			// update to reverse wallet if the transaction failed
 			$transactionReference = $this->expenseRequestBody['reference'] ?? $this->reference;
 			if ($this->walletType === Enum::DEBIT) {
-				$this->reverseCash($status, $transactionReference);
+				$this->reverseCash($status, $transactionReference, $this->credentials['wallet_id']);
 			} elseif($this->walletType === Enum::CREDIT) {
-				$this->reverseCredit($status, $transactionReference);
+				$this->reverseCredit($status, $transactionReference, $this->credentials['account_id'], $this->credentials['amount']);
 			}
 		}
 	}
@@ -174,9 +181,9 @@ class ExpenseProcess implements ExpenseContract
 	/**
 	 * @throws ExpenseException
 	 */
-	private function reverseCash(bool $status, string $reference): void
+	public function reverseCash(bool $status, string $reference, string $walletId): void
 	{
-		$walletUpdateUrl = config('expense.cash.base_url') . 'wallets/' . $this->credentials['wallet_id'] . '/transactions/' . $reference;
+		$walletUpdateUrl = config('expense.cash.base_url') . 'wallets/' . $walletId . '/transactions/' . $reference;
 
 		$requestBody = [
 			'reference' => $reference,
@@ -188,11 +195,11 @@ class ExpenseProcess implements ExpenseContract
 		sendRequestTo($walletUpdateUrl, $requestBody, getPrivateKey(Enum::WALLET), 'put');
 	}
 
-	private function reverseCredit($status, $reference): void
+	public function reverseCredit($status, $reference, $accountId, $amount): void
 	{
 		$this->creditCardTransaction->updateAccount(
-			$this->credentials['account_id'],
-			$this->credentials['amount'],
+			$accountId,
+			$amount,
 			$status
 		);
 	}
@@ -217,6 +224,7 @@ class ExpenseProcess implements ExpenseContract
 			$this->creditCardTransaction->logTransactionsForCash(
 				'credpal_cash',
 				$this->credentials['amount'],
+				$this->expenseRequestBody['reference'] ?? $this->reference,
 				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type,
 				$this->type,
 				$this->credentials['wallet_id'],
@@ -227,6 +235,7 @@ class ExpenseProcess implements ExpenseContract
 				$this->credentials['account_id'],
 				'credpal_card',
 				$this->credentials['amount'],
+				$this->expenseRequestBody['reference'] ?? $this->reference,
 				$status,
 				$this->type,
 				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type,

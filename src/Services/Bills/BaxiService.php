@@ -115,7 +115,8 @@ class BaxiService extends ExpenseProcess
 		$this->billsTransaction::updateTransactionLog(
 			$this->reference,
 			$response['status'] ? ENUM::SUCCESS : ENUM::PENDING,
-			$response
+			$response['data']['transactionMessage'] ?? null,
+			$response['data']
 		);
 	}
 }
