@@ -66,15 +66,15 @@ class DuplicateTransactionService
 			})
 			->where('created_at', '>', Carbon::now()->subMinutes($duplicateTransactionCheckInterval));
 
-		if ($accountType == Enum::WALLET_TYPE_CREDIT) {
+		if ($accountType === Enum::WALLET_TYPE_CREDIT) {
 			$transfer = $transfer->where('account_id', $accountId)->first();
-		} elseif ($accountType == Enum::WALLET_TYPE_CASH) {
+		} elseif ($accountType === Enum::WALLET_TYPE_CASH) {
 			$transfer = $transfer->where('wallet_id', $accountId)->first();
 		}
 
 		if ($transfer) {
 			throw new ExpenseException(
-				"A transfer with similar detail exist. Please try again in few minutes",
+				"A transfer with similar details exists. Please try again in a few minutes",
 				Response::HTTP_PRECONDITION_FAILED
 			);
 		}
