@@ -5,6 +5,7 @@ namespace Credpal\Expense\Services;
 use Credpal\Expense\Contract\ExpenseContract;
 use Credpal\Expense\Exceptions\ExpenseException;
 use Credpal\Expense\Traits\BIllTransactionTrait;
+use Credpal\Expense\Traits\TransferTrait;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -12,6 +13,7 @@ use Illuminate\Support\Collection;
 class ExpenseProcess implements ExpenseContract
 {
 	use BIllTransactionTrait;
+	use TransferTrait;
 	/**
 	 * @var Collection
 	 */
@@ -72,11 +74,16 @@ class ExpenseProcess implements ExpenseContract
 		if ($this->walletType === Enum::DEBIT) {
 			$this->withdrawFromCash($requestBody);
 		} elseif($this->walletType === Enum::CREDIT) {
-			$this->withdrawFromCredit($requestBody);
+			$this->withdrawFromCredit();
 		}
 
-		($this->type !== ENUM::TRANSFER && $this->type !== ENUM::TRIPS)
-			? $this->initialTransactionLogForBills($this->type) : true;
+		if ($this->type === ENUM::TRANSFER) {
+			$this->initialTransferLog();
+		}
+
+		if ($this->type !== ENUM::TRANSFER && $this->type !== ENUM::TRIPS) {
+			$this->initialTransactionLogForBills($this->type);
+		}
 
 		return $this;
 	}
@@ -98,7 +105,7 @@ class ExpenseProcess implements ExpenseContract
 
 	}
 
-	private function withdrawFromCredit($requestBody): void
+	private function withdrawFromCredit(): void
 	{
 		$this->creditCardTransaction->checkLocalAccount();
 		$this->creditCardTransaction->makeWithdrawal();
@@ -160,22 +167,22 @@ class ExpenseProcess implements ExpenseContract
 
 		\Log::info('request came from payment');
 
-		if (!$status && $this->type === ENUM::ELECTRICITY_REQUEST) {
+		if (!$status) {
 			throw new ExpenseException(
-				'Kindly hold on while your electricity request is being processed',
+				'Kindly hold on while your transaction is being processed',
 				Response::HTTP_PRECONDITION_FAILED
 			);
 		}
 
-		if (!$status) {
-			// update to reverse wallet if the transaction failed
-			$transactionReference = $this->expenseRequestBody['reference'] ?? $this->reference;
-			if ($this->walletType === Enum::DEBIT) {
-				$this->reverseCash($status, $transactionReference, $this->credentials['wallet_id']);
-			} elseif($this->walletType === Enum::CREDIT) {
-				$this->reverseCredit($status, $transactionReference, $this->credentials['account_id'], $this->credentials['amount']);
-			}
-		}
+//        if (!$status) {
+//            // update to reverse wallet if the transaction failed
+//            $transactionReference = $this->expenseRequestBody['reference'] ?? $this->reference;
+//            if ($this->walletType === Enum::DEBIT) {
+//                $this->reverseCash($status, $transactionReference, $this->credentials['wallet_id']);
+//            } elseif($this->walletType === Enum::CREDIT) {
+//                $this->reverseCredit($status, $transactionReference, $this->credentials['account_id'], $this->credentials['amount']);
+//            }
+//        }
 	}
 
 	/**
@@ -222,7 +229,7 @@ class ExpenseProcess implements ExpenseContract
 
 		if ($this->walletType === Enum::DEBIT) {
 			$this->creditCardTransaction->logTransactionsForCash(
-				'credpal_cash',
+				Enum::WALLET_TYPE_CASH,
 				$this->credentials['amount'],
 				$this->expenseRequestBody['reference'] ?? $this->reference,
 				$this->credentials['description'] ?? $this->credentials['service_type'] ?? $this->type,
@@ -233,7 +240,7 @@ class ExpenseProcess implements ExpenseContract
 		} elseif($this->walletType === Enum::CREDIT) {
 			$this->creditCardTransaction->logTransactions(
 				$this->credentials['account_id'],
-				'credpal_card',
+				Enum::WALLET_TYPE_CREDIT,
 				$this->credentials['amount'],
 				$this->expenseRequestBody['reference'] ?? $this->reference,
 				$status,
@@ -268,6 +275,25 @@ class ExpenseProcess implements ExpenseContract
 			$this->credentials['wallet_type'],
 			$this->credentials['account_number'] ?? $this->credentials['smartcard_number'] ?? $this->credentials['phone']
 		);
+	}
+
+	private function initialTransferLog()
+	{
+		$this->logTransfer(
+			$this->credentials['user_id'],
+			$this->credentials['account_id'] ?? null,
+			$this->credentials['wallet_id'] ?? null,
+			Enum::WALLET_TYPE_CASH,
+			$this->walletResponse['data']['transaction']['reference'] ?? $this->reference,
+			$this->credentials['amount'],
+
+		);
+	}
+
+	public function getTransferByReference(string $reference)
+	{
+		$url = config('expense.expense.base_url') . "/transfers/{$reference}";
+		return sendRequestTo($url, null, getPrivateKey(Enum::EXPENSE), 'get');
 	}
 
 	public function getBillTransaction(string $reference)
