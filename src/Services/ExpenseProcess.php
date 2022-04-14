@@ -78,7 +78,7 @@ class ExpenseProcess implements ExpenseContract
 		}
 
 		if ($this->type === ENUM::TRANSFER) {
-			$this->initialTransferLog($this->type);
+			$this->initialTransferLog();
 		}
 
 		if ($this->type !== ENUM::TRANSFER && $this->type !== ENUM::TRIPS) {
