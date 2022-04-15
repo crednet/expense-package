@@ -30,6 +30,12 @@ trait BIllTransactionTrait
 		);
 	}
 
+	public function updateTransactionLog($reference, $status, $description, $data): void
+	{
+		$this->getBillsTransactionInstance();
+		$this->billsTransaction::updateTransactionLog($reference, $status, $description, $data);
+	}
+
 	public function getBillsTransactionInstance()
 	{
 		$billTransactionModel = config('expense.bill_transactions_model');
