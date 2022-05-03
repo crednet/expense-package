@@ -188,7 +188,7 @@ class ExpenseProcess implements ExpenseContract
 	/**
 	 * @throws ExpenseException
 	 */
-	public function reverseCash(bool $status, string $reference, string $walletId): void
+	public function reverseCash(bool $status, string $reference, string $walletId): array
 	{
 		$walletUpdateUrl = config('expense.cash.base_url') . 'wallets/' . $walletId . '/transactions/' . $reference;
 
@@ -199,7 +199,7 @@ class ExpenseProcess implements ExpenseContract
 		// There is an edge case here. Assuming the wallet service was not available at this point. It means
 		// it wont be updated/reversed for a while. So that is why jobs and queues should be used,
 		// So that whenever it comes online it can pick jobs from the queue
-		sendRequestTo($walletUpdateUrl, $requestBody, getPrivateKey(Enum::WALLET), 'put');
+		return sendRequestTo($walletUpdateUrl, $requestBody, getPrivateKey(Enum::WALLET), 'put');
 	}
 
 	public function reverseCredit($status, $reference, $accountId, $amount): void
