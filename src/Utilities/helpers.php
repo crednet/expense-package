@@ -35,6 +35,7 @@ if (!function_exists('processResponse')) {
             return [
                 'status' => false,
                 'message' => $message,
+		'status_code' => $data['status_code'] ?? null,
                 'errors' => $data['errors'] ?? [],
             ];
         }
