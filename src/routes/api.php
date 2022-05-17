@@ -11,7 +11,15 @@ Route::group([
 	'prefix' => 'api/expense',
 	'middleware' => ['auth:api']
 ], function () {
-	Route::post('transfers', 'TransferController@transfer');
+	Route::post('transfers', 'TransferController@transfer')
+		->middleware([
+			config('expense.blacklisted'),
+			config('expense.post_no_debit'),
+			config('expense.daily_transfer_count'),
+			config('expense.daily_cash_transaction'),
+			config('expense.trusted_device'),
+			config('expense.transaction_pin')
+		]);
 //	Route::post('transfers', 'TransferController@store');
 	Route::post('webhook/transfers', 'TransferController@webhook');
 
@@ -41,20 +49,20 @@ Route::group([
 		Route::get('electricity-billers', 'BaxiController@getElectricityBillers');
 		Route::post('verify-electricity-user', 'BaxiController@verifyElectricityUser');
 
-		Route::get('{reference}', 'BaxiController@fetchBillTransaction');
-
 		Route::group(['middleware' => [
 			config('expense.blacklisted'),
-			config('expense.check_airtime_daily_usage'),
 			config('expense.post_no_debit'),
-			config('expense.transaction_pin'),
+			config('expense.check_airtime_daily_usage'),
 			config('expense.trusted_device'),
+			config('expense.transaction_pin'),
 		]], function () {
 			Route::post('airtime-request', 'BaxiController@airtimeRequest');
 			Route::post('databundle-request', 'BaxiController@dataBundleRequest');
 			Route::post('multichoice-request', 'BaxiController@multichoiceRequest');
 			Route::post('electricity-request', 'BaxiController@electricityRequest');
 		});
+
+		Route::get('{reference}', 'BaxiController@fetchBillTransaction');
 	});
 
 //	Route::group([
