@@ -16,6 +16,8 @@ return [
 	'post_no_debit' => '\App\Http\Middleware\PostNoDebitRestriction::class',
 	'transaction_pin' => '\App\Http\Middleware\Auth\TransactionPinMiddleware::class',
 	'trusted_device' => '\App\Http\Middleware\Auth\TrustedDeviceMiddleware::class',
+	'daily_cash_transaction' => '\App\Http\Middleware\Transaction\DailyCashTransactionMiddleware::class',
+	'daily_transfer_count' => '\App\Http\Middleware\Transaction\DailyTransferCountMiddleware::class',
 
 	'cash' => [
 		'base_url' => env('CPCASH_BASEURL'),
