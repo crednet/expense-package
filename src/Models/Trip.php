@@ -23,6 +23,15 @@ class Trip extends Model
 
 	public const TYPE_FLIGHT = 'flight';
 
+	protected $casts = [
+		'request_data' => 'json',
+		'response_data' => 'json'
+	];
+
+	protected $hidden = [
+		'user_id', 'user_type', 'deleted_at'
+	];
+
 	protected $guarded = [];
 
 	public function user()
