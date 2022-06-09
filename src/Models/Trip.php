@@ -29,10 +29,32 @@ class Trip extends Model
 	];
 
 	protected $hidden = [
-		'user_id', 'user_type', 'deleted_at'
+		'user_id', 'user_type', 'deleted_at', 'response_data', 'request_data'
 	];
 
 	protected $guarded = [];
+
+	protected $with = [
+		'tripTravellers'
+	];
+
+	public function adultTravellers()
+	{
+		return $this->tripTravellers()
+			->where('passenger_type_code', 'ADT');
+	}
+
+	public function childTravellers()
+	{
+		return $this->tripTravellers()
+			->where('passenger_type_code', 'CHD');
+	}
+
+	public function infantTravellers()
+	{
+		return $this->tripTravellers()
+			->where('passenger_type_code', 'INF');
+	}
 
 	public function user()
 	{

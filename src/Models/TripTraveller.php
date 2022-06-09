@@ -7,12 +7,20 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TripTraveller extends Model
 {
-    use SoftDeletes;
+	use SoftDeletes;
 
-    protected $guarded = [];
-    
-    public function trips()
-    {
-        return $this->belongsTo(Trip::class);
-    }
+	protected $casts = [
+		'address' => 'json'
+	];
+
+	protected $guarded = [];
+
+	protected $hidden = [
+		'updated_at', 'deleted_at'
+	];
+
+	public function trips()
+	{
+		return $this->belongsTo(Trip::class);
+	}
 }
