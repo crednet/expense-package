@@ -34,6 +34,28 @@ class Trip extends Model
 
 	protected $guarded = [];
 
+	protected $with = [
+		'tripTravellers'
+	];
+
+	public function adultTravellers()
+	{
+		return $this->tripTravellers()
+			->where('passenger_type_code', 'ADT');
+	}
+
+	public function childTravellers()
+	{
+		return $this->tripTravellers()
+			->where('passenger_type_code', 'CHD');
+	}
+
+	public function infantTravellers()
+	{
+		return $this->tripTravellers()
+			->where('passenger_type_code', 'INF');
+	}
+
 	public function user()
 	{
 		return $this->belongsTo('App\User', 'user_id');
