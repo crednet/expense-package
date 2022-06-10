@@ -3,6 +3,7 @@
 namespace Credpal\Expense\Services\Bills;
 
 use Credpal\Expense\Exceptions\ExpenseException;
+use Credpal\Expense\Services\DuplicateTransactionService;
 use Credpal\Expense\Services\ExpenseProcess;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Http\Response;
@@ -10,111 +11,112 @@ use Illuminate\Support\Collection;
 
 class BaxiService extends ExpenseProcess
 {
-    protected Collection $credentials;
-    protected array $requestBody;
+	/**
+	 * @return array
+	 * @throws ExpenseException
+	 */
+	public function requestAirtime(): array
+	{
+		DuplicateTransactionService::checkDuplicateTransaction(
+			Enum::AIRTIME,
+			$this->credentials['wallet_type'],
+			$this->credentials['phone'],
+			$this->credentials->toArray()
+		);
 
-    public function __construct($credentials)
-    {
-        $this->credentials = $credentials;
-        parent::__construct($credentials);
-    }
+		$this->expenseRequestBody = [
+			'phone' => $this->credentials['phone'],
+			'service_type' => $this->credentials['service_type'],
+			'plan' => $this->credentials['plan'],
+		];
+		$response = $this->initiateTransaction(ENUM::AIRTIME, 'bills/baxi/airtime-request');
+		$this->updateBillsTransactions($response);
+		return $response;
+	}
 
-    /**
-     * @return array
-     * @throws ExpenseException
-     */
-    public function requestAirtime(): array
-    {
-        $this->requestBody = [
-            'recipient_number' => $this->credentials['recipient_number'],
-            'service_type' => $this->credentials['service_type'],
-            'plan' => $this->credentials['plan'],
-        ];
-        return $this->initiateTransaction(ENUM::AIRTIME, $this->requestBody, 'baxi/airtime-request');
-    }
+	/**
+	 * @return array
+	 * @throws ExpenseException
+	 */
+	public function requestDatabundle(): array
+	{
+		DuplicateTransactionService::checkDuplicateTransaction(
+			Enum::DATABUNDLE,
+			$this->credentials['wallet_type'],
+			$this->credentials['phone'],
+			$this->credentials->toArray()
+		);
 
-    /**
-     * @return array
-     * @throws ExpenseException
-     */
-    public function requestDatabundle(): array
-    {
-        $this->requestBody = [
-            'recipient_number' => $this->credentials['recipient_number'],
-            'service_type' => $this->credentials['service_type'],
-            'datacode' => $this->credentials['datacode'],
-        ];
-        return $this->initiateTransaction(ENUM::DATABUNDLE, $this->requestBody, 'baxi/databundle-request');
-    }
+		$this->expenseRequestBody = [
+			'phone' => $this->credentials['phone'],
+			'service_type' => $this->credentials['service_type'],
+			'datacode' => $this->credentials['datacode'],
+		];
+		$response = $this->initiateTransaction(ENUM::DATABUNDLE, 'bills/baxi/databundle-request');
+		$this->updateBillsTransactions($response);
+		return $response;
+	}
 
-    /**
-     * @return array
-     * @throws ExpenseException
-     */
-    public function verifyAccountDetails(): array
-    {
-        $this->requestBody = [
-            'service_type' => $this->credentials['service_type'],
-            'account_number' => $this->credentials['account_number'],
-        ];
-        return $this->initiateTransaction(ENUM::VERIFY_ACCOUNT, $this->requestBody, 'baxi/verify-account-details');
-    }
+	/**
+	 * @return array
+	 * @throws ExpenseException
+	 */
+	public function multichoiceRequest(): array
+	{
+		$data = $this->credentials->toArray();
+		$data['amount'] = $this->credentials['amount'];
 
-    /**
-     * @return array
-     * @throws ExpenseException
-     */
-    public function getMultichoiceAddons(): array
-    {
-        $this->requestBody = [
-            'service_type' => $this->credentials['service_type'],
-            'product_code' => $this->credentials['product_code'],
-        ];
-        return $this->initiateTransaction(ENUM::MULTICHOICE_ADDON, $this->requestBody, 'baxi/multichoice/addons');
-    }
+		DuplicateTransactionService::checkDuplicateTransaction(
+			Enum::MULTICHOICE_SUBSCRIPTION,
+			$this->credentials['wallet_type'],
+			$this->credentials['smartcard_number'],
+			$data
+		);
 
-    /**
-     * @return array
-     * @throws ExpenseException
-     */
-    public function multichoiceRequest(): array
-    {
-        $this->requestBody = [
-            'smartcard_number' => $this->credentials['smartcard_number'],
-            'total_amount' => $this->credentials['total_amount'],
-            'product_code' => $this->credentials['product_code'],
-            'product_monthsPaidFor' => $this->credentials['product_monthsPaidFor'],
-            'addon_code' => $this->credentials['addon_code'],
-            'addon_monthsPaidFor' => $this->credentials['addon_monthsPaidFor'],
-            'service_type' => $this->credentials['service_type'],
-        ];
-        return $this->initiateTransaction(ENUM::MULTICHOICE_SUBSCRIPTION, $this->requestBody, 'baxi/multichoice-request');
-    }
+		$this->expenseRequestBody = [
+			'smartcard_number' => $this->credentials['smartcard_number'],
+			'total_amount' => $this->credentials['total_amount'],
+			'product_code' => $this->credentials['product_code'],
+			'product_monthsPaidFor' => $this->credentials['product_monthsPaidFor'],
+			'addon_code' => $this->credentials['addon_code'],
+			'addon_monthsPaidFor' => $this->credentials['addon_monthsPaidFor'],
+			'service_type' => $this->credentials['service_type'],
+		];
+		$response = $this->initiateTransaction(ENUM::MULTICHOICE_SUBSCRIPTION, 'bills/baxi/multichoice-request');
+		$this->updateBillsTransactions($response);
+		return $response;
+	}
 
-    /**
-     * @return array
-     * @throws ExpenseException
-     */
-    public function verifyElectricityUser(): array
-    {
-        $this->requestBody = [
-            'service_type' => $this->credentials['service_type'],
-            'account_number' => $this->credentials['account_number'],
-        ];
-        return $this->initiateTransaction(ENUM::VERIFY_ELECTRICITY, $this->requestBody, 'baxi/verify-electricity-user');
-    }
+	/**
+	 * @return array
+	 * @throws ExpenseException
+	 */
+	public function electricityRequest(): array
+	{
+		DuplicateTransactionService::checkDuplicateTransaction(
+			Enum::ELECTRICITY_REQUEST,
+			$this->credentials['wallet_type'],
+			$this->credentials['account_number'],
+			$this->credentials->toArray()
+		);
 
-    /**
-     * @return array
-     * @throws ExpenseException
-     */
-    public function electricityRequest(): array
-    {
-        $this->requestBody = [
-            'service_type' => $this->credentials['service_type'],
-            'account_number' => $this->credentials['account_number'],
-            'recipient_number' => $this->credentials['recipient_number'],
-        ];
-        return $this->initiateTransaction(ENUM::ELECTRICITY_REQUEST, $this->requestBody, 'baxi/verify-electricity-user');
-    }
+		$this->expenseRequestBody = [
+			'service_type' => $this->credentials['service_type'],
+			'account_number' => $this->credentials['account_number'],
+			'phone' => $this->credentials['phone'],
+		];
+		$response = $this->initiateTransaction(ENUM::ELECTRICITY_REQUEST, 'bills/baxi/electricity-request');
+		$this->updateBillsTransactions($response);
+		return $response;
+	}
+
+	private function updateBillsTransactions($response): void
+	{
+		$this->updateTransactionLog(
+			$this->expenseRequestBody['reference'],
+			$response['status'] ? ENUM::SUCCESS : ENUM::PENDING,
+			$response['data']['transactionMessage'] ?? null,
+			$response['data']
+		);
+	}
 }

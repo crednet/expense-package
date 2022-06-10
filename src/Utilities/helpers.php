@@ -4,7 +4,7 @@ use Credpal\Expense\Exceptions\ExpenseException;
 use Credpal\Expense\Traits\ExpenseError;
 use Credpal\Expense\Utilities\Enum;
 use Illuminate\Support\Facades\Http;
-
+use Symfony\Component\HttpFoundation\Response;
 define('WITH_EXCEPTION', true);
 define('WITHOUT_EXCEPTION', true);
 
@@ -35,6 +35,7 @@ if (!function_exists('processResponse')) {
             return [
                 'status' => false,
                 'message' => $message,
+				'status_code' => $data['status_code'] ?? null,
                 'errors' => $data['errors'] ?? [],
             ];
         }
@@ -60,9 +61,13 @@ if (!function_exists('processResponseWithException')) {
         $data = processResponse($response);
         $status = $data['status'];
         $msg = $message ?? $data['message'];
-        if (isset($data['success']) && !$data['success'] || !$status) {
+        if ($response->status() === Response::HTTP_UNPROCESSABLE_ENTITY) {
+            ExpenseError::setErrors($response->json()['errors']);
+        }
+
+        if ((isset($data['success']) && !$data['success']) || !$status) {
             // This will terminate the whole process and notify this user
-            ExpenseError::abortIfUnsuccessfulResponse($data['message']);
+            ExpenseError::abortIfUnsuccessfulResponse($data['message'], $response->status());
         }
         return $data;
     }
@@ -70,35 +75,37 @@ if (!function_exists('processResponseWithException')) {
 
 
 if (!function_exists('sendRequestAndThrowExceptionOnFailure')) {
-    /**
-     * @param string $url
-     * @param array $requestBody
-     * @param string $privateKey
-     * @param null|string $customMessage
-     * @return array
-     * @throws ExpenseException
-     */
+	/**
+	 * @param string $url
+	 * @param array|null $requestBody
+	 * @param string $privateKey
+	 * @param string $method
+	 * @param null|string $customMessage
+	 * @return array
+	 * @throws ExpenseException
+	 */
     function sendRequestAndThrowExceptionOnFailure(
         string $url,
-        array $requestBody,
-        string $privateKey,
+        ?array $requestBody,
+		string $privateKey,
+		string $method = 'post',
         string $customMessage = null
     ): array {
-        $response = Http::acceptJson()->withToken($privateKey)->post($url, $requestBody);
+        $response = Http::acceptJson()->withToken($privateKey)->$method($url, $requestBody);
         return processResponseWithException($response, $customMessage);
     }
 }
 
 
 if (!function_exists('sendRequestTo')) {
-    /**
-     * @param string $url
-     * @param array $requestBody
-     * @param string $privateKey
-     * @param string $method
-     * @return array
-     */
-    function sendRequestTo(string $url, array $requestBody, string $privateKey, string $method = 'post'): array
+	/**
+	 * @param string $url
+	 * @param array|null $requestBody
+	 * @param string $privateKey
+	 * @param string $method
+	 * @return array
+	 */
+    function sendRequestTo(string $url, ?array $requestBody, string $privateKey, string $method = 'post'): array
     {
         $response = Http::acceptJson()->withToken($privateKey)->$method($url, $requestBody);
         return processResponse($response);
@@ -113,12 +120,19 @@ if (!function_exists('getPrivateKey')) {
      */
     function getPrivateKey(string $serviceType): string
     {
-        switch ($serviceType) {
-            case Enum::WALLET:
-                $key = config('expense.wallet_private_key');
-                break;
+		$env = config('app.env');
+		switch ($serviceType) {
+			case Enum::WALLET:
+				switch ($env) {
+					case Enum::PRODUCTION:
+						$key = config('expense.cash.private_key.live');
+						break;
+					default:
+						$key = config('expense.cash.private_key.test');
+				}
+				break;
             case Enum::EXPENSE:
-                $key = config('expense.expense_private_key');
+                $key = config('expense.expense.private_key');
                 break;
             default:
                 $key = null;

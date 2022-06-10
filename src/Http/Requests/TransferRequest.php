@@ -2,7 +2,9 @@
 
 namespace  Credpal\Expense\Http\Requests;
 
+use Credpal\Expense\Utilities\Enum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TransferRequest extends FormRequest
 {
@@ -24,14 +26,14 @@ class TransferRequest extends FormRequest
     public function rules(): array
     {
          return [
-             'user_id' => ['required', "exists:users,id"],
+             'user_id' => ["required", "exists:users,id"],
              "wallet_id" => ["required"],
-             "wallet_type" => ["required", "string"],
+			 'wallet_type' => ["required", Rule::in(Enum::DEBIT)],
              "amount" => ["required", "numeric"],
              "cbs_account_number" => ["nullable", "numeric"],
-             "account_number" => ["required", "numeric"],
-             "account_name" => ["required", "string"],
-             "bank_code" => ["required", "numeric"],
+             "account_number" => ["nullable", "numeric"],
+             "account_name" => ["nullable", "string"],
+             "bank_code" => ["nullable", "numeric"],
              "description" => ["nullable", "string"],
          ];
     }

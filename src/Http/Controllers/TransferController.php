@@ -35,9 +35,11 @@ class TransferController extends Controller
      */
     public function store(TransferRequest $request): JsonResponse
     {
+        logger('controller');
         $data = $request->only([
             'user_id',
-            'wallet_id',
+			'wallet_id',
+			'account_id',
             'wallet_type',
             'amount',
             'cbs_account_number',
@@ -49,8 +51,18 @@ class TransferController extends Controller
         $credentials->put('description', $request->description ?? null);
         $transfer = new TransferService($credentials);
         $result = $transfer->makeTransfer();
+	logger('response gotten from transfer');
         return $this->success($result['data']);
     }
+
+	public function transfer(TransferRequest $request): JsonResponse
+	{
+		$credentials = collect($request);
+		$credentials->put('description', $request->description ?? 'Transferring funds from cash wallet');
+		$transfer = new TransferService($credentials);
+		$result = $transfer->makeTransfer();
+		return $this->success($result['data']);
+	}
 
     /**
      * @param Request $request

@@ -2,9 +2,11 @@
 
 namespace Credpal\Expense\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Exception;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * Trait TResponder
@@ -81,5 +83,26 @@ trait TResponse
         ];
 
         return response()->json($response, $statusCode);
+    }
+
+    public function datatable(
+        Builder $query,
+        array $config = [],
+        $resourceClass = null
+    )
+    {
+        $data = config('expense.datatable_class')::make($query, $config, $resourceClass);
+
+        if ($data instanceof BinaryFileResponse) {
+            return $data;
+        }
+
+        $response = [
+            'success' => true,
+            'message' => 'Data Fetched Successfully',
+            'datatable' => $data,
+        ];
+
+        return response()->json($response, Response::HTTP_OK);
     }
 }

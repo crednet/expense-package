@@ -1,14 +1,35 @@
-[<?php
+<?php
 
 return [
-    'bvn_model' => '\App\UserProfile',
-    'bvn_column' => 'bvn',
-    'debit_wallet_url' => env('DEBIT_WALLET_TRANSACTION_URL'),
-    'debit_wallet_finalize_url' => env('DEBIT_WALLET_FINALIZE_URL'),
-    'credit_wallet_url' => env('CREDIT_WALLET_TRANSACTION_URL'),
-    'credit_wallet_finalize__url' => env('CREDIT_WALLET_FINALIZE_URL'),
-    'transfer_url' => env('EXPENSE_TRANSFER_URL'),
-    'bills_url' => env('EXPENSE_BILLS_URL'),
-    'wallet_private_key' => env('WALLET_PRIVATE_KEY'),
-    'expense_private_key' => env('EXPENSE_SERVICE_PRIVATE_KEY'),
+	'profile_model' => '\App\UserProfile',
+	'user_model' => '\App\User',
+	'bvn_column' => 'bvn',
+	'email_column' => 'email',
+	'bill_transactions_model' => '\App\BillTransaction',
+	'configuration_model' => 'App\Configuration',
+	'transfer_model' => 'App\Models\Transfer\Transfer',
+	'credit_card_transaction' => '\App\Services\V2\CreditCard\CreditCardTransactionService',
+	'datatable_class' => 'App\Helpers\Datatable',
+	// middleware section
+	'blacklisted' => '\App\Http\Middleware\Blacklisted::class',
+	'check_airtime_daily_usage' => '\App\Http\Middleware\CheckAirtimeDailyUsage::class',
+	'post_no_debit' => '\App\Http\Middleware\PostNoDebitRestriction::class',
+	'transaction_pin' => '\App\Http\Middleware\Auth\TransactionPinMiddleware::class',
+	'trusted_device' => '\App\Http\Middleware\Auth\TrustedDeviceMiddleware::class',
+	'daily_cash_transaction' => '\App\Http\Middleware\Transaction\DailyCashTransactionMiddleware::class',
+	'daily_transfer_count' => '\App\Http\Middleware\Transaction\DailyTransferCountMiddleware::class',
+
+	'cash' => [
+		'base_url' => env('CPCASH_BASEURL'),
+		'private_key' => [
+			'test' => env('CPCASH_TEST_SECRET_KEY'),
+			'live' => env('CPCASH_LIVE_SECRET_KEY')
+		],
+		'public_key' => env('CASH_PUBLIC_KEY'),
+	],
+	'expense' => [
+		'base_url' => env('EXPENSE_BASE_URL'),
+		'private_key' => env('EXPENSE_PRIVATE_KEY'),
+		'public_key' => env('EXPENSE_PUBLIC_KEY'),
+	]
 ];

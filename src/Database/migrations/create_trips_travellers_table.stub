@@ -1,0 +1,57 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use App\Traits\WithMigrationIndex;
+
+class CreateTripTravellersTable extends Migration
+{
+    use WithMigrationIndex;
+
+    /**
+     * The table name for this migration
+     *
+     * @var string $schemaTable
+     */
+    protected $schemaTable = 'trip_travellers';
+
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
+    {
+        Schema::create($this->schemaTable, function (Blueprint $table) {
+            $table->id();
+           $table->foreignId('trip_id')->index()
+                           ->constrained('trips')
+                           ->cascadeOnDelete();
+            $table->string('passenger_type_code')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('dob')->nullable();
+            $table->string('title')->nullable();
+            $table->string('gender')->nullable();
+            $table->json('address')->nullable();
+            $table->json('documents')->nullable();
+            $table->string('e_ticket_number')->nullable();
+            $table->string('traveller_reference_id')->nullable();
+
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists($this->schemaTable);
+    }
+}

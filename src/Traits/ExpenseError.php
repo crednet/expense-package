@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 
 trait ExpenseError
 {
+    public static $error;
 
     /**
      * @throws ExpenseException
@@ -23,12 +24,27 @@ trait ExpenseError
      * @param null|string $message
      * @throws ExpenseException
      */
-    public static function abortIfUnsuccessfulResponse($message = null): void
+    public static function abortIfUnsuccessfulResponse($message = null, $code = Response::HTTP_FAILED_DEPENDENCY): void
     {
         $msg = ($message) ?: trans('expense::exception.unsuccessful_transaction');
         throw new ExpenseException(
             $msg,
-            Response::HTTP_FAILED_DEPENDENCY
+            $code
         );
     }
+    
+    public static function setErrors(array $errors)
+    {
+        self::$error = $errors;
+    }
+
+    /**
+     *
+     */
+    public static function errors()
+    {
+        return self::$error;
+    }
+
+    
 }
