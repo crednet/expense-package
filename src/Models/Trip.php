@@ -29,7 +29,14 @@ class Trip extends Model
 	];
 
 	protected $hidden = [
-		'user_id', 'user_type', 'deleted_at', 'response_data', 'request_data'
+		'user_id',
+		'user_type',
+		'deleted_at',
+		'response_data',
+		'request_data',
+		'adult_travellers_count',
+		'child_travellers_count',
+		'infant_travellers_count'
 	];
 
 	protected $guarded = [];
