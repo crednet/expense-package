@@ -55,9 +55,15 @@ class TransferController extends Controller
         return $this->success($result['data']);
     }
 
+	/**
+	 * @param TransferRequest $request
+	 *
+	 * @return JsonResponse
+	 * @throws ExpenseException
+	 */
 	public function transfer(TransferRequest $request): JsonResponse
 	{
-		$credentials = collect($request);
+		$credentials = $request->collect();
 		$credentials->put('description', $request->description ?? 'Transferring funds from cash wallet');
 		$transfer = new TransferService($credentials);
 		$result = $transfer->makeTransfer();
