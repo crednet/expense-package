@@ -37,7 +37,7 @@ if (!function_exists('processResponse')) {
             if ($response->failed()) {
                 Log::error('error making request to service from http response instance', [
                     'response' => json_encode($response),
-                    'status' => $response->status() ?? null
+                    'status' => $response->status() ?? null,
                     'message' => $response->body() ?? null
                 ]);
             }
