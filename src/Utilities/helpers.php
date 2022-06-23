@@ -35,8 +35,10 @@ if (!function_exists('processResponse')) {
     {
         if ($response instanceof HttpResponse) {
             if ($response->failed()) {
-                Log::error('error making request to service', [
-                    'response' => json_encode($response)
+                Log::error('error making request to service from http response instance', [
+                    'response' => json_encode($response),
+                    'status' => $response->status() ?? null
+                    'message' => $response->body() ?? null
                 ]);
             }
 
@@ -58,7 +60,7 @@ if (!function_exists('processResponse')) {
         }
 
         \Log::error('error making request to service', [
-            'error' => $response->__toString()
+            'error' => $response->__toString(),
         ]);
 
         return [
@@ -117,8 +119,8 @@ if (!function_exists('sendRequestAndThrowExceptionOnFailure')) {
     ): array {
         $response = rescue(
             static fn () => Http::acceptJson()
-                ->timeout(70)
-                ->retry(2, 5000)
+                ->timeout(80)
+                ->retry(3, 6000)
                 ->withToken($privateKey)->$method($url, $requestBody),
             static fn ($e) => $e instanceof RequestException ? $e->response : $e,
             false
@@ -144,8 +146,8 @@ if (!function_exists('sendRequestTo')) {
     {
         $response = rescue(
             static fn () => Http::acceptJson()
-                ->timeout(70)
-                ->retry(2, 5000)
+                ->timeout(80)
+                ->retry(3, 6000)
                 ->withToken($privateKey)->$method($url, $requestBody),
             static fn ($e) => $e instanceof RequestException ? $e->response : $e,
             false
