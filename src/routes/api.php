@@ -14,7 +14,6 @@ Route::group([
 	Route::post('transfers', 'TransferController@transfer')
 		->middleware([
 			config('expense.blacklisted'),
-			config('expense.post_no_debit'),
 			config('expense.daily_transfer_count'),
 			config('expense.daily_cash_transaction'),
 			config('expense.trusted_device'),
@@ -48,7 +47,6 @@ Route::group([
 
 		Route::group(['middleware' => [
 			config('expense.blacklisted'),
-			config('expense.post_no_debit'),
 			config('expense.check_airtime_daily_usage'),
 			config('expense.trusted_device'),
 			config('expense.transaction_pin'),
